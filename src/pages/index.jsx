@@ -1,10 +1,12 @@
 import React from "react";
 import styled from "styled-components";
+import Header from "../components/common/Header";
 
 const RecruitmentPage = () => {
     return (
         <Wrap>
-            <div className="test">hi</div>
+            <Header />
+            {/* <div className="test">hi</div> */}
         </Wrap>
     );
 };
