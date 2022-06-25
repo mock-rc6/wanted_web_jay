@@ -8,7 +8,7 @@ const Header = () => {
     return (
         <Wrap>
             <nav className="main-bar">
-                <div className="header-wrap">
+                <div>
                     <img
                         className="hamburger-img"
                         src={hamburger}
@@ -56,6 +56,7 @@ const Header = () => {
 };
 
 const Wrap = styled.div`
+    padding: 0px 300px;
     height: 50px;
     border-bottom: 1px solid #cccccc;
     font-size: 14px;
@@ -63,10 +64,7 @@ const Wrap = styled.div`
     .main-bar {
         display: flex;
         align-items: center;
-        justify-content: center;
-    }
-    .header-wrap {
-        margin-right: 60px;
+        justify-content: space-between;
     }
 
     .hamburger-img {
@@ -99,7 +97,6 @@ const Wrap = styled.div`
     }
 
     .header-aside {
-        margin-left: 60px;
         display: flex;
         align-items: center;
         & > button:nth-child(1) {
