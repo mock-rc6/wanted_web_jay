@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import Header from "../../components/common/Header";
 import Footer from "../../components/common/Footer";
@@ -22,7 +22,58 @@ const tags = [
     "IT, 컨텐츠",
 ];
 const RecruitDetail = () => {
+    const { naver } = window;
+    let map = null;
+
     const [warningOpen, setWarningOpen] = useState(false);
+    const [position, setPosition] = useState({
+        lat: 0,
+        lon: 0,
+    });
+    const { lat, lon } = position;
+
+    useEffect(() => {
+        geocoding();
+    }, []);
+
+    useEffect(() => {
+        if (lat !== 0 && lon !== 0) initMap();
+    }, [position]);
+
+    const geocoding = () => {
+        // 주소 -> 좌표로 변경
+        naver.maps.Service.geocode(
+            {
+                address: "서울특별시 강남구 봉은사로 644 대웅신관 3층",
+            },
+            function (status, response) {
+                if (status !== naver.maps.Service.Status.OK) {
+                    return alert("error!");
+                }
+
+                const result = response.result,
+                    items = result.items;
+
+                setPosition({
+                    lon: items[0].point.x,
+                    lat: items[0].point.y,
+                });
+            }
+        );
+    };
+
+    const initMap = () => {
+        //네이버 지도 불러오는 함수
+        const mapOptions = {
+            center: new naver.maps.LatLng(lat, lon),
+            zoom: 15,
+            zoomControl: true,
+            zoomControlOptions: {
+                position: naver.maps.Position.TOP_RIGHT,
+            },
+        };
+        map = new naver.maps.Map("map", mapOptions);
+    }; //end initMap
 
     return (
         <Wrap>
@@ -186,7 +237,7 @@ const RecruitDetail = () => {
                                     서울특별시 강남구 봉은사로 644 대웅신관 3층
                                 </span>
                             </div>
-                            <article></article>
+                            <div id="map" className="map"></div>
                         </section>
                         <section className="company-info">
                             <button>
@@ -483,7 +534,7 @@ const Wrap = styled.div`
             color: rgb(51, 51, 51);
         }
 
-        & article {
+        & .map {
             height: 254px;
             background-color: skyblue;
         }
