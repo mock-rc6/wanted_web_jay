@@ -10,7 +10,7 @@ import tag06 from "../assets/imgs/img-tag-06.png";
 import tag07 from "../assets/imgs/img-tag-07.png";
 import tag08 from "../assets/imgs/img-tag-08.png";
 
-import Card from "../components/Recruitment/Card";
+import Card from "../components/common/Card";
 
 const tags = [
     { label: "연봉이 최고의 복지", src: tag01 },
@@ -50,7 +50,7 @@ const RecruitmentPage = () => {
                                 }}>
                                 <path
                                     fill="#767676"
-                                    fill-rule="nonzero"
+                                    fillRule="nonzero"
                                     d="M2.28 3.22a.75.75 0 0 0-1.06 1.06l4.25 4.25a.75.75 0 0 0 1.06 0l4.25-4.25a.75.75 0 0 0-1.06-1.06L6 6.94 2.28 3.22z"></path>
                             </svg>
                         </button>
@@ -161,7 +161,7 @@ const RecruitmentPage = () => {
                                 </defs>
                                 <g
                                     fill="none"
-                                    fill-rule="evenodd"
+                                    fillRule="evenodd"
                                     transform="translate(.188)">
                                     <use
                                         fill="currentColor"
@@ -182,7 +182,7 @@ const RecruitmentPage = () => {
                     </div>
                     <div className="joblist-container">
                         {gridItems.map((data, idx) => (
-                            <Card />
+                            <Card key={idx} id={idx + 1} />
                         ))}
                     </div>
                 </div>
