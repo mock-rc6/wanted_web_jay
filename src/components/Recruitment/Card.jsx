@@ -38,7 +38,7 @@ const Card = () => {
 const Wrap = styled.div`
     font-weight: 600;
     width: 100%;
-    margin: 0 auto;
+
     &:hover {
         cursor: pointer;
     }

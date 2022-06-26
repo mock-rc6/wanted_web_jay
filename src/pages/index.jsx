@@ -311,8 +311,8 @@ const Wrap = styled.div`
     & .joblist-container {
         display: grid;
         grid-template-columns: repeat(4, 1fr);
-        column-gap: 10px;
-        row-gap: 10px;
+        column-gap: 20px;
+        row-gap: 28px;
     }
 `;
 const FilterButton = styled.button`
