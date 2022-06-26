@@ -56,7 +56,7 @@ const Header = () => {
 };
 
 const Wrap = styled.div`
-    padding: 0px 300px;
+    padding: 0px 10%;
     height: 50px;
     border-bottom: 1px solid #cccccc;
     font-size: 14px;

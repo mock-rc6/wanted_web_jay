@@ -10,6 +10,8 @@ import tag06 from "../assets/imgs/img-tag-06.png";
 import tag07 from "../assets/imgs/img-tag-07.png";
 import tag08 from "../assets/imgs/img-tag-08.png";
 
+import Card from "../components/Recruitment/Card";
+
 const tags = [
     { label: "연봉이 최고의 복지", src: tag01 },
     { label: "재택근무", src: tag02 },
@@ -60,7 +62,7 @@ const RecruitmentPage = () => {
                 </div>
             </article>
             <div className="joblist-wrap">
-                <div>
+                <div style={{ width: "100%" }}>
                     <div className="filter-wrap">
                         <div>
                             <div className="filterbar">
@@ -180,7 +182,7 @@ const RecruitmentPage = () => {
                     </div>
                     <div className="joblist-container">
                         {gridItems.map((data, idx) => (
-                            <div>ddd</div>
+                            <Card />
                         ))}
                     </div>
                 </div>
@@ -190,23 +192,23 @@ const RecruitmentPage = () => {
 };
 
 const Wrap = styled.div`
-    .hr-01 {
+    & .hr-01 {
         border: 0px;
         border-top: 1px solid #cccccc;
         margin: 25px 0px;
     }
-    .hr-02 {
-        margin-left: -300px;
+    & .hr-02 {
+        margin-left: -12.5%;
         width: 100vw;
         border: 0px;
         border-top: 1px solid #cccccc;
         margin-bottom: 38px;
     }
-    .category-navbar-container {
+    & .category-navbar-container {
         padding-top: 40px;
     }
-    .category-navbar-body {
-        padding: 0px 300px;
+    & .category-navbar-body {
+        padding: 0px 10%;
         display: flex;
         align-items: center;
 
@@ -238,12 +240,12 @@ const Wrap = styled.div`
         }
     }
 
-    .joblist-wrap {
+    & .joblist-wrap {
         padding: 20px 0px 80px 0px;
-        margin: 0px 300px;
+        margin: 0px 10%;
     }
 
-    .filter-wrap {
+    & .filter-wrap {
         padding-top: 10px;
         margin-bottom: 25px;
         & > div:nth-child(1) {
@@ -252,15 +254,15 @@ const Wrap = styled.div`
             align-items: center;
         }
     }
-    .filterbar {
+    & .filterbar {
         display: flex;
         align-items: center;
     }
 
-    .sort-wrap {
+    & .sort-wrap {
     }
 
-    .tag-list {
+    & .tag-list {
         display: flex;
         align-items: center;
         width: 100%;
@@ -292,7 +294,7 @@ const Wrap = styled.div`
         }
     }
 
-    .joblist-bookmark-section {
+    & .joblist-bookmark-section {
         margin-bottom: 12px;
         color: rgb(51, 102, 255);
         font-weight: 600;
@@ -306,9 +308,11 @@ const Wrap = styled.div`
         }
     }
 
-    .joblist-container {
+    & .joblist-container {
         display: grid;
         grid-template-columns: repeat(4, 1fr);
+        column-gap: 10px;
+        row-gap: 10px;
     }
 `;
 const FilterButton = styled.button`
