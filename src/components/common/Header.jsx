@@ -36,12 +36,12 @@ const Header = () => {
                                     id="qt2dnsql4a"
                                     d="M15.727 17.273a.563.563 0 10.796-.796l-4.875-4.875-.19-.165a.563.563 0 00-.764.028 5.063 5.063 0 111.261-2.068.562.562 0 101.073.338 6.188 6.188 0 10-1.943 2.894l4.642 4.644z"></path>
                             </defs>
-                            <g fill="none" fill-rule="evenodd">
+                            <g fill="none" fillRule="evenodd">
                                 <use
                                     fill="#333"
-                                    fill-rule="nonzero"
+                                    fillRule="nonzero"
                                     stroke="#333"
-                                    stroke-width=".3"
+                                    strokeWidth=".3"
                                     xlinkHref="#qt2dnsql4a"></use>
                             </g>
                         </svg>
@@ -60,11 +60,16 @@ const Wrap = styled.div`
     height: 50px;
     border-bottom: 1px solid #cccccc;
     font-size: 14px;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    background-color: #fff;
 
     .main-bar {
         display: flex;
         align-items: center;
         justify-content: space-between;
+        height: 50px;
     }
 
     .hamburger-img {
@@ -86,7 +91,9 @@ const Wrap = styled.div`
         display: flex;
         align-items: center;
         height: 50px;
+        padding: 0;
         & > li {
+            list-style: none;
             line-height: 20px;
             padding: 15px;
             &:hover {
@@ -96,14 +103,15 @@ const Wrap = styled.div`
         }
     }
 
-    .header-aside {
+    & .header-aside {
         display: flex;
         align-items: center;
-        & > button:nth-child(1) {
+
+        & > button:nth-of-type(1) {
             all: unset;
             padding: 0px 10px;
         }
-        & > button:nth-child(2) {
+        & > button:nth-of-type(2) {
             all: unset;
             padding: 0px 10px;
             margin-right: 6px;
@@ -116,7 +124,7 @@ const Wrap = styled.div`
             color: #cccccc;
         }
     }
-    .btn-company-service {
+    & .btn-company-service {
         all: unset;
         border: 1px solid #cccccc;
         border-radius: 15px;
