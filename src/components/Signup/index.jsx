@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef, useState } from "react";
 import styled from "styled-components";
 import Modal from "../common/Modal";
 import logo from "../../assets/imgs/img-logo.png";
@@ -9,6 +9,34 @@ const Signup = ({
     closeModal,
     setOpenSignupDetailModal,
 }) => {
+    const ref = useRef();
+
+    const [email, setEmail] = useState("");
+    const [isValid, setIsValid] = useState(true);
+
+    const handleEmail = (e) => {
+        setEmail(e.target.value);
+    };
+
+    const emailRegExp = (email) => {
+        //이메일 체크 정규식
+        const regExp =
+            /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i;
+
+        return regExp.test(email) ? true : false;
+    };
+
+    const checkEmailValid = (email) => {
+        if (emailRegExp(email)) {
+            closeModal();
+            setOpenSignupDetailModal(true);
+            setIsValid(true);
+        } else {
+            setIsValid(false);
+            ref.current.style.borderColor = "#fe415c";
+        }
+    };
+
     return (
         <Modal width={width} modalStatus={modalStatus} closeModal={closeModal}>
             <Wrap>
@@ -42,19 +70,25 @@ const Signup = ({
                             <label htmlFor="email">이메일</label>
                             <div>
                                 <input
+                                    ref={ref}
                                     type="email"
                                     placeholder="이메일을 입력해 주세요."
                                     id="email"
                                     autoFocus
+                                    onChange={handleEmail}
                                 />
+                                <ErrorMsg isValid={isValid}>
+                                    <span>
+                                        올바른 이메일 형식을 입력해주세요.
+                                    </span>
+                                </ErrorMsg>
                             </div>
                         </div>
                         <div className="input-button">
                             <button
                                 className="email-login-button"
                                 onClick={() => {
-                                    closeModal();
-                                    setOpenSignupDetailModal(true);
+                                    checkEmailValid(email);
                                 }}>
                                 <svg
                                     style={{ marginRight: 10 }}
@@ -350,5 +384,10 @@ const Wrap = styled.div`
         }
     }
 `;
-
+const ErrorMsg = styled.div`
+    display: ${(props) => (props.isValid ? "none" : "block")};
+    margin-top: 6px;
+    color: #fe415c;
+    font-size: 12px;
+`;
 export default Signup;
