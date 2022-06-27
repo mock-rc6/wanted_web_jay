@@ -4,9 +4,11 @@ import hamburger from "../../assets/imgs/img-hamburger.png";
 import logo from "../../assets/imgs/img-logo.png";
 import { Link } from "react-router-dom";
 import Signup from "../Signup";
+import SignupDetail from "../Signup/SignupDetail";
 
 const Header = () => {
     const [openSignupModal, setOpenSignupModal] = useState(false);
+    const [openSignupDetailModal, setOpenSignupDetailModal] = useState(false);
 
     return (
         <Wrap>
@@ -64,6 +66,15 @@ const Header = () => {
                 modalStatus={openSignupModal}
                 closeModal={() => {
                     setOpenSignupModal(false);
+                }}
+                setOpenSignupDetailModal={setOpenSignupDetailModal}
+            />
+            <SignupDetail
+                width={400}
+                modalStatus={openSignupDetailModal}
+                closeModal={() => {
+                    if (window.confirm("회원가입을 취소하시겠습니까?"))
+                        setOpenSignupDetailModal(false);
                 }}
             />
         </Wrap>

@@ -3,7 +3,12 @@ import styled from "styled-components";
 import Modal from "../common/Modal";
 import logo from "../../assets/imgs/img-logo.png";
 
-const Signup = ({ width, modalStatus, closeModal }) => {
+const Signup = ({
+    width,
+    modalStatus,
+    closeModal,
+    setOpenSignupDetailModal,
+}) => {
     return (
         <Modal width={width} modalStatus={modalStatus} closeModal={closeModal}>
             <Wrap>
@@ -45,7 +50,12 @@ const Signup = ({ width, modalStatus, closeModal }) => {
                             </div>
                         </div>
                         <div className="input-button">
-                            <button className="email-login-button">
+                            <button
+                                className="email-login-button"
+                                onClick={() => {
+                                    closeModal();
+                                    setOpenSignupDetailModal(true);
+                                }}>
                                 <svg
                                     style={{ marginRight: 10 }}
                                     xmlns="http://www.w3.org/2000/svg"
