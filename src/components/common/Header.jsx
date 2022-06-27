@@ -1,10 +1,13 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import hamburger from "../../assets/imgs/img-hamburger.png";
 import logo from "../../assets/imgs/img-logo.png";
 import { Link } from "react-router-dom";
+import Signup from "../Signup";
 
 const Header = () => {
+    const [openSignupModal, setOpenSignupModal] = useState(false);
+
     return (
         <Wrap>
             <nav className="main-bar">
@@ -46,11 +49,23 @@ const Header = () => {
                             </g>
                         </svg>
                     </button>
-                    <button>회원가입/로그인</button>
+                    <button
+                        onClick={() => {
+                            setOpenSignupModal(true);
+                        }}>
+                        회원가입/로그인
+                    </button>
                     <span>|</span>
                     <button className="btn-company-service">기업 서비스</button>
                 </aside>
             </nav>
+            <Signup
+                width={400}
+                modalStatus={openSignupModal}
+                closeModal={() => {
+                    setOpenSignupModal(false);
+                }}
+            />
         </Wrap>
     );
 };
