@@ -2,6 +2,8 @@ import React, { useRef, useState } from "react";
 import styled from "styled-components";
 import Modal from "../common/Modal";
 import logo from "../../assets/imgs/img-logo.png";
+import { useDispatch } from "react-redux";
+import { dispatchEmail } from "../../store/actions/signup";
 
 const Signup = ({
     width,
@@ -10,12 +12,14 @@ const Signup = ({
     setOpenSignupDetailModal,
 }) => {
     const ref = useRef();
+    const dispatch = useDispatch();
 
     const [email, setEmail] = useState("");
     const [isValid, setIsValid] = useState(true);
 
     const handleEmail = (e) => {
         setEmail(e.target.value);
+        dispatch(dispatchEmail(e.target.value));
     };
 
     const emailRegExp = (email) => {

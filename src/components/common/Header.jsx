@@ -53,7 +53,8 @@ const Header = () => {
                     </button>
                     <button
                         onClick={() => {
-                            setOpenSignupModal(true);
+                            if (!openSignupDetailModal)
+                                setOpenSignupModal(true);
                         }}>
                         회원가입/로그인
                     </button>
@@ -73,8 +74,7 @@ const Header = () => {
                 width={400}
                 modalStatus={openSignupDetailModal}
                 closeModal={() => {
-                    if (window.confirm("회원가입을 취소하시겠습니까?"))
-                        setOpenSignupDetailModal(false);
+                    setOpenSignupDetailModal(false);
                 }}
             />
         </Wrap>
