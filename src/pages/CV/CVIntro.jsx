@@ -7,7 +7,7 @@ const CVIntro = () => {
     return (
         <Wrap>
             <Header />
-            <div>
+            <div className="container">
                 <section className="resume-intro resume-intro-edit">
                     <div className="resume-intro-content">
                         <h1 style={{ fontSize: 56 }}>이력서 양식, 그 이상</h1>
@@ -98,12 +98,13 @@ const Wrap = styled.div`
         background-image: url(https://static.wanted.co.kr/images/userweb/resume_intro/resume_01_en.png);
     }
 
-    section {
-        &:not(:nth-of-type(1)) {
+    .container:nth-child(1) {
+        &:not(div) {
             padding: 80px 0 55px;
         }
     }
     .resume-intro-content {
+        padding: 80px 0 55px;
         width: 60%;
         text-align: center;
         margin: 0 auto;
