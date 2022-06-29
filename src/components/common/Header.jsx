@@ -25,8 +25,12 @@ const Header = () => {
                 </div>
                 <ul className="menu">
                     <li>채용</li>
+                    <li>이벤트</li>
+                    <li>직군별 연봉</li>
                     <li>이력서</li>
                     <li>커뮤니티</li>
+                    <li>프리랜서</li>
+                    <li>AI 합격예측</li>
                 </ul>
                 <aside className="header-aside">
                     <button>
@@ -122,6 +126,8 @@ const Wrap = styled.div`
             list-style: none;
             line-height: 20px;
             padding: 15px;
+            border-top: 2px solid transparent;
+            border-bottom: 2px solid transparent;
             &:hover {
                 cursor: pointer;
                 border-bottom: 2px solid gray;
