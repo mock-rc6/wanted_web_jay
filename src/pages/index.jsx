@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import Header from "../components/common/Header";
 import tag01 from "../assets/imgs/img-tag-01.png";
@@ -11,6 +11,8 @@ import tag07 from "../assets/imgs/img-tag-07.png";
 import tag08 from "../assets/imgs/img-tag-08.png";
 
 import Card from "../components/common/Card";
+import axios from "axios";
+import { api } from "../api/api";
 
 const tags = [
     { label: "연봉이 최고의 복지", src: tag01 },
@@ -25,20 +27,38 @@ const tags = [
 
 const gridItems = [1, 2, 3, 4, 5, 6];
 
+const jobGroupList = ["개발", "경영·비즈니스", "마케팅·광고", "디자인", "영업"];
+
 const RecruitmentPage = () => {
     const [careerFilterButton, setCareerFilterButton] = useState(false);
     const [techStackFilterButton, setTechStackFilterButton] = useState(false);
     const [sortButton, setSortButton] = useState(false);
+    const [jobGroupButton, setJobGroupButton] = useState(false); //직무 분야 버튼 open 여부
+
+    useEffect(() => {
+        axios
+            .get(api + "recruits?positions=backend")
+            .then((res) => {
+                console.log("res :>> ", res);
+            })
+            .catch((e) => {
+                console.log("e :>> ", e);
+            });
+    }, []);
 
     return (
         <Wrap>
             <Header />
             <article className="category-navbar-container">
                 <div className="category-navbar-body">
-                    <div>
-                        <button>
+                    <div className="job-group">
+                        <button
+                            onClick={() => {
+                                setJobGroupButton(!jobGroupButton);
+                            }}>
                             <span>전체</span>
-                            <svg
+                            <JobGroupArrow
+                                isClicked={jobGroupButton}
                                 xmlns="https://www.w3.org/2000/svg"
                                 width="12"
                                 height="12"
@@ -52,8 +72,18 @@ const RecruitmentPage = () => {
                                     fill="#767676"
                                     fillRule="nonzero"
                                     d="M2.28 3.22a.75.75 0 0 0-1.06 1.06l4.25 4.25a.75.75 0 0 0 1.06 0l4.25-4.25a.75.75 0 0 0-1.06-1.06L6 6.94 2.28 3.22z"></path>
-                            </svg>
+                            </JobGroupArrow>
                         </button>
+                        <JobGroupSelectSection isClicked={jobGroupButton}>
+                            <ul>
+                                <li>전체</li>
+                                {jobGroupList.map((data, idx) => (
+                                    <li key={idx} value={data}>
+                                        {data}
+                                    </li>
+                                ))}
+                            </ul>
+                        </JobGroupSelectSection>
                     </div>
                     <div>
                         <span>|</span>
@@ -212,14 +242,19 @@ const Wrap = styled.div`
         display: flex;
         align-items: center;
 
-        & > div:nth-child(1) > button {
-            all: unset;
-            display: flex;
-            align-items: center;
-            & > span {
-                margin-right: 15px;
-                font-size: 24px;
-                font-weight: bold;
+        .job-group {
+            position: relative;
+            & > button {
+                all: unset;
+                display: flex;
+                align-items: center;
+                cursor: pointer;
+
+                & > span {
+                    margin-right: 15px;
+                    font-size: 24px;
+                    font-weight: bold;
+                }
             }
         }
 
@@ -235,7 +270,6 @@ const Wrap = styled.div`
 
             & > span:nth-child(2) {
                 font-size: 24px;
-                color: #aaa;
             }
         }
     }
@@ -346,4 +380,40 @@ const CareerArrow = styled.svg`
 `;
 const TechStackArrow = styled(CareerArrow)``;
 const SortArrow = styled(CareerArrow)``;
+const JobGroupArrow = styled(CareerArrow)`
+    border: 1px solid #e1e2e3;
+    border-radius: 50%;
+    padding: 7px;
+`;
+const JobGroupSelectSection = styled.section`
+    display: ${(props) => (props.isClicked ? "block" : "none")};
+    position: absolute;
+    top: 40px;
+    overflow-y: hidden;
+    width: 190px;
+    max-height: 70vh;
+    background-color: #fff;
+    border: 1px solid #e1e2e3;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    border-radius: 5px;
+    z-index: 1;
+    padding: 15px 0;
+    box-sizing: border-box;
+
+    & li {
+        list-style: none;
+        font-size: 16px;
+        line-height: 22px;
+        font-weight: 500;
+        padding: 10px 0 10px 25px;
+        display: flex;
+        align-items: center;
+        color: #333;
+        white-space: nowrap;
+        &:hover {
+            cursor: pointer;
+            background-color: #efefef;
+        }
+    }
+`;
 export default RecruitmentPage;
