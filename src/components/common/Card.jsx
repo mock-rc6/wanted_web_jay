@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 
-const Card = ({ id }) => {
+const Card = ({ id, position, companyName, responseRate }) => {
     return (
         <Link
             to={`/recruit-detail/${id}`}
@@ -29,9 +29,11 @@ const Card = ({ id }) => {
                     </button>
                 </Header>
                 <div className="body">
-                    <div className="job-card-position">인프라 엔지니어</div>
-                    <div className="job-card-company-name">삼성전자</div>
-                    <button>응답률 매우 높음</button>
+                    <div className="job-card-position">{position}</div>
+                    <div className="job-card-company-name">{companyName}</div>
+                    {responseRate > 0.9 ? (
+                        <button>응답률 매우 높음</button>
+                    ) : null}
                     <div className="job-card-company-location">서울 · 한국</div>
                     <div className="reward">채용보상금 1,000,000원</div>
                 </div>
