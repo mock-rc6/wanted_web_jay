@@ -103,7 +103,7 @@ const Wrap = styled.div`
     font-size: 14px;
     position: sticky;
     top: 0;
-    z-index: 1;
+    z-index: 800;
     background-color: #fff;
 
     .main-bar {
