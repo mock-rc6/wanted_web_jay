@@ -25,26 +25,74 @@ const tags = [
     { label: "업력 5년 이상", src: tag08 },
 ];
 
-const gridItems = [1, 2, 3, 4, 5, 6];
-
-const jobGroupList = ["개발", "경영·비즈니스", "마케팅·광고", "디자인", "영업"];
+const jobGroupList = [
+    { id: "all", title: "전체" },
+    { id: "development", title: "개발" },
+    { id: "management", title: "경영·비즈니스" },
+    { id: "marketing", title: "마케팅·광고" },
+    { id: "design", title: "디자인" },
+    { id: "sales", title: "영업" },
+];
 
 const RecruitmentPage = () => {
+    const [gridItems, setGridItems] = useState([]);
     const [careerFilterButton, setCareerFilterButton] = useState(false);
     const [techStackFilterButton, setTechStackFilterButton] = useState(false);
     const [sortButton, setSortButton] = useState(false);
     const [jobGroupButton, setJobGroupButton] = useState(false); //직무 분야 버튼 open 여부
+    const [jobCategoryButton, setJobCategoryButton] = useState(false);
+
+    const [jobGroup, setJobGroup] = useState("전체"); //선택된 직무 종류
+    const [jobGroupId, setJobGroupId] = useState("");
+    const [jobCategory, setJobCategory] = useState([]); //선택된 포지션
+    const [jobCategoryId, setJobCategoryId] = useState([]);
+
+    const [jobCategoryList, setJobCategoryList] = useState([
+        { category: "개발 전체", isClicked: true, id: "all" },
+        { category: "웹 개발자", isClicked: false },
+        { category: "서버 개발자", isClicked: false, id: "backend" },
+        { category: "프론트엔드 개발자", isClicked: false, id: "frontend" },
+        { category: "소프트웨어 엔지니어", isClicked: false },
+        { category: "자바 개발자", isClicked: false },
+        { category: "안드로이드 개발자", isClicked: false },
+        { category: "iOS 개발자", isClicked: false },
+        { category: "Node.js 개발자", isClicked: false },
+    ]);
 
     useEffect(() => {
         axios
-            .get(api + "recruits?positions=backend")
+            .get(
+                api +
+                    `recruits?${
+                        jobGroupId === "all" ? null : `job_group=${jobGroupId}`
+                    }&${
+                        jobCategoryId[0] === "all"
+                            ? null
+                            : jobCategoryId
+                                  .map((data) => `positions=${data}&`)
+                                  .join("")
+                    }`
+            )
             .then((res) => {
                 console.log("res :>> ", res);
+                console.log("URL :>> ", res.request.responseURL);
+                setGridItems(res.data.result);
             })
             .catch((e) => {
                 console.log("e :>> ", e);
             });
-    }, []);
+    }, [jobGroupId, jobCategoryId]);
+
+    useEffect(() => {
+        setJobGroupButton(false);
+    }, [jobGroup]);
+
+    const handleJobGroup = (e) => {
+        //선택하면 옆에 직군 선택 가능하게 변경
+        setJobGroup(e.target.innerHTML);
+        setJobGroupId(e.target.attributes.value.nodeValue);
+        setJobCategory([jobCategoryList[0].category]);
+    };
 
     return (
         <Wrap>
@@ -56,7 +104,7 @@ const RecruitmentPage = () => {
                             onClick={() => {
                                 setJobGroupButton(!jobGroupButton);
                             }}>
-                            <span>전체</span>
+                            <span>{jobGroup}</span>
                             <JobGroupArrow
                                 isClicked={jobGroupButton}
                                 xmlns="https://www.w3.org/2000/svg"
@@ -76,19 +124,104 @@ const RecruitmentPage = () => {
                         </button>
                         <JobGroupSelectSection isClicked={jobGroupButton}>
                             <ul>
-                                <li>전체</li>
                                 {jobGroupList.map((data, idx) => (
-                                    <li key={idx} value={data}>
-                                        {data}
+                                    <li
+                                        key={idx}
+                                        value={data.id}
+                                        onClick={handleJobGroup}>
+                                        {data.title}
                                     </li>
                                 ))}
                             </ul>
                         </JobGroupSelectSection>
                     </div>
-                    <div>
+                    <div className="job-category">
                         <span>|</span>
-                        <span>직군을 선택해주세요.</span>
+                        {jobGroup === "전체" ? (
+                            <span>직군을 선택해주세요.</span>
+                        ) : (
+                            <button
+                                className="job-category-button"
+                                onClick={() => {
+                                    setJobCategoryButton(!jobCategoryButton);
+                                }}>
+                                <span>
+                                    {jobCategory.map((data) => data).join(", ")}
+                                </span>
+                                <JobCategoryArrow
+                                    isClicked={jobCategoryButton}
+                                    xmlns="https://www.w3.org/2000/svg"
+                                    width="12"
+                                    height="12"
+                                    viewBox="0 0 12 12"
+                                    style={{
+                                        border: "1px solid #cccccc",
+                                        borderRadius: "50%",
+                                        padding: 7,
+                                    }}>
+                                    <path
+                                        fill="#767676"
+                                        fillRule="nonzero"
+                                        d="M2.28 3.22a.75.75 0 0 0-1.06 1.06l4.25 4.25a.75.75 0 0 0 1.06 0l4.25-4.25a.75.75 0 0 0-1.06-1.06L6 6.94 2.28 3.22z"></path>
+                                </JobCategoryArrow>
+                            </button>
+                        )}
                     </div>
+                    <JobCategorySelectSection isClicked={jobCategoryButton}>
+                        <div className="job-category-section-top">
+                            <p>직무를 선택해 주세요. (최대 5개 선택 가능)</p>
+                            <div>
+                                {jobCategoryList.map((data, idx) => (
+                                    <JobCategoryItem
+                                        key={idx}
+                                        onClick={() => {
+                                            let list = [...jobCategoryList];
+                                            list.forEach((data, i) => {
+                                                if (idx === 0) {
+                                                    //전체 를 선택했을 때 나머지는 false
+                                                    if (i === 0)
+                                                        data.isClicked =
+                                                            !data.isClicked;
+                                                    else data.isClicked = false;
+                                                } else {
+                                                    //나머지를 선택했을 때 전체는 false
+                                                    if (i === 0)
+                                                        data.isClicked = false;
+                                                    if (idx === i)
+                                                        data.isClicked =
+                                                            !data.isClicked;
+                                                }
+                                            });
+
+                                            setJobCategoryList(list);
+                                        }}
+                                        isClicked={data.isClicked}>
+                                        {data.category}
+                                    </JobCategoryItem>
+                                ))}
+                            </div>
+                        </div>
+                        <div className="job-category-section-bottom">
+                            <button
+                                onClick={() => {
+                                    setJobCategoryButton(false);
+                                    let category = [];
+                                    let id = [];
+
+                                    jobCategoryList.forEach((data) => {
+                                        if (data.isClicked) {
+                                            category.push(data.category);
+                                            id.push(data.id);
+                                        }
+                                    });
+
+                                    setJobCategory(category);
+                                    setJobCategoryId(id); //카테고리 str말고 배열로 받아야함
+                                }}>
+                                선택 완료하기
+                            </button>
+                        </div>
+                    </JobCategorySelectSection>
                 </div>
             </article>
             <div className="joblist-wrap">
@@ -212,7 +345,13 @@ const RecruitmentPage = () => {
                     </div>
                     <div className="joblist-container">
                         {gridItems.map((data, idx) => (
-                            <Card key={idx} id={idx + 1} />
+                            <Card
+                                key={idx}
+                                id={idx + 1}
+                                position={data.title}
+                                companyName={data.company_name}
+                                responseRate={data.response_rate}
+                            />
                         ))}
                     </div>
                 </div>
@@ -241,6 +380,7 @@ const Wrap = styled.div`
         padding: 0px 10%;
         display: flex;
         align-items: center;
+        position: relative;
 
         .job-group {
             position: relative;
@@ -254,22 +394,8 @@ const Wrap = styled.div`
                     margin-right: 15px;
                     font-size: 24px;
                     font-weight: bold;
+                    white-space: nowrap;
                 }
-            }
-        }
-
-        & > div:nth-child(2) {
-            display: flex;
-            align-items: center;
-
-            & > span:nth-child(1) {
-                padding: 0px 24px;
-                font-size: 30px;
-                color: #cccccc;
-            }
-
-            & > span:nth-child(2) {
-                font-size: 24px;
             }
         }
     }
@@ -348,6 +474,38 @@ const Wrap = styled.div`
         column-gap: 20px;
         row-gap: 28px;
     }
+
+    .job-category {
+        display: flex;
+        align-items: center;
+        width: 100%;
+
+        & > span:nth-child(1) {
+            padding: 0px 24px;
+            font-size: 30px;
+            color: #cccccc;
+        }
+
+        & > span:nth-child(2) {
+            font-size: 24px;
+        }
+    }
+
+    .job-category-button {
+        border: 0;
+        background: none;
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+
+        & > span {
+            padding-top: 3px;
+            margin-right: 15.5px;
+            font-size: 24px;
+            line-height: 29px;
+            color: #333;
+        }
+    }
 `;
 const FilterButton = styled.button`
     all: unset;
@@ -385,6 +543,7 @@ const JobGroupArrow = styled(CareerArrow)`
     border-radius: 50%;
     padding: 7px;
 `;
+const JobCategoryArrow = styled(CareerArrow)``;
 const JobGroupSelectSection = styled.section`
     display: ${(props) => (props.isClicked ? "block" : "none")};
     position: absolute;
@@ -414,6 +573,76 @@ const JobGroupSelectSection = styled.section`
             cursor: pointer;
             background-color: #efefef;
         }
+    }
+`;
+const JobCategorySelectSection = styled.section`
+    position: absolute;
+    top: 40px;
+    width: calc(100% - 140px);
+    max-width: 910px;
+    display: ${(props) => (props.isClicked ? "table" : "none")};
+    height: fit-content;
+    background-color: #fff;
+    border: 1px solid #e1e2e3;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    border-radius: 5px;
+    z-index: 1;
+
+    .job-category-section-top {
+        padding: 25px 25px 8px;
+        max-width: 910px;
+
+        & > p {
+            color: #666;
+            font-weight: 400;
+            font-size: 12px;
+            line-height: 14.4px;
+            margin-bottom: 10px;
+            white-space: nowrap;
+        }
+
+        & > div {
+            display: flex;
+            flex-wrap: wrap;
+        }
+    }
+
+    .job-category-section-bottom {
+        padding: 16px;
+        text-align: right;
+        border-top: 1px solid #ececec;
+        background-color: #fff;
+
+        & > button {
+            width: 160px;
+            height: 40px;
+            font-size: 15px;
+            color: #fff;
+            background-color: #36f;
+            border: none;
+            border-radius: 25px;
+            font-weight: 700;
+            cursor: pointer;
+            &:hover {
+                background-color: #013be9;
+            }
+        }
+    }
+`;
+const JobCategoryItem = styled.button`
+    border: 1px solid ${(props) => (props.isClicked ? "#36f" : "#f2f4f7")};
+    height: 32px;
+    margin-right: 10px;
+    margin-bottom: 12px;
+    background: ${(props) => (props.isClicked ? "#fff" : "#f2f4f7")};
+    border-radius: 20px;
+    padding: 8px 14px;
+    font-size: 13px;
+    line-height: 16px;
+    color: ${(props) => (props.isClicked ? "#36f" : "#333")};
+    cursor: pointer;
+    &:hover {
+        border: 1px solid #36f;
     }
 `;
 export default RecruitmentPage;
