@@ -4,7 +4,9 @@ import Modal from "../common/Modal";
 import { IoIosArrowForward } from "react-icons/io";
 import axios from "axios";
 import { api } from "../../api/api";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { useCookies } from "react-cookie";
+import { loginAction } from "../../store/actions/login";
 
 const mobileOptions = [
     { value: "+82", data: "South Korea" },
@@ -12,6 +14,7 @@ const mobileOptions = [
     { value: "+1", data: "United States" },
 ];
 const SignupDetail = ({ width, modalStatus, closeModal }) => {
+    const dispatch = useDispatch();
     const passwordRef = useRef();
     const passwordMsgRef = useRef();
     const passwordCheckRef = useRef();
@@ -20,6 +23,7 @@ const SignupDetail = ({ width, modalStatus, closeModal }) => {
 
     const email = useSelector((state) => state.SignupReducer.email);
 
+    const [cookie, setCookie, removeCookie] = useCookies(["cookie-name"]);
     const [form, setForm] = useState({
         name: "",
         phoneNum: "",
@@ -37,6 +41,9 @@ const SignupDetail = ({ width, modalStatus, closeModal }) => {
     const [codeIsValid, setCodeIsValid] = useState(0); //번호 요청 완료
     const [isPasswordSame, setIsPasswordSame] = useState(true);
     const [passwordRight, setPasswordRight] = useState(false);
+    const [pw, setPw] = useState("");
+
+    //useEffect로 해당 이메일의 가입여부 확인
 
     useEffect(() => {
         checkPhoneNum(phoneNum);
@@ -215,9 +222,42 @@ const SignupDetail = ({ width, modalStatus, closeModal }) => {
         }
     };
 
+    const login = () => {
+        axios
+            .post(
+                api + "users/login",
+                { email, password: pw },
+                { withCredentials: true }
+            )
+            .then((res) => {
+                console.log("res :>> ", res);
+                if (res.data.isSuccess) {
+                    setCookie("accessToken", res.data.result.jwt);
+                    const userInfo = {
+                        email,
+                        id: res.data.result.id,
+                    };
+                    dispatch(loginAction(userInfo));
+                    console.log("로그인 성공!");
+                    closeLoginModal();
+                } else alert(res.data.message);
+            })
+            .catch((e) => {
+                console.log("e :>> ", e);
+            });
+    };
+
+    const closeLoginModal = () => {
+        closeModal();
+        window.location.reload();
+    };
+
+    const handlePassword = (e) => {
+        setPw(e.target.value);
+    };
     return (
         <Modal width={width} modalStatus={modalStatus} closeModal={close}>
-            <Wrap>
+            {/* <Wrap>
                 <div className="modal-header">
                     회원가입
                     <button onClick={close}>
@@ -405,6 +445,45 @@ const SignupDetail = ({ width, modalStatus, closeModal }) => {
                         </div>
                     </SubmitButtonWrap>
                 </div>
+            </Wrap> */}
+            <Wrap>
+                <div className="modal-header">
+                    비밀번호 입력
+                    <button onClick={close}>
+                        <svg
+                            width="24"
+                            height="24"
+                            viewBox="0 0 24 24"
+                            color="#999">
+                            <path
+                                fill="currentColor"
+                                d="M17.97 19.03a.75.75 0 001.06-1.06l-6.5-6.5a.75.75 0 00-1.06 0l-6.5 6.5a.75.75 0 001.06 1.06L12 13.06l5.97 5.97zM12 10.94L6.03 4.97a.75.75 0 00-1.06 1.06l6.5 6.5a.75.75 0 001.06 0l6.5-6.5a.75.75 0 00-1.06-1.06L12 10.94z"></path>
+                        </svg>
+                    </button>
+                </div>
+                <div className="password-modal-body">
+                    <div className="style-wrap">
+                        <label htmlFor="password">비밀번호</label>
+                        <div className="style-body">
+                            <input
+                                type="password"
+                                placeholder="비밀번호"
+                                id="password"
+                                onChange={handlePassword}
+                                autoFocus
+                            />
+                        </div>
+                    </div>
+                    <SubmitButton
+                        style={{ marginTop: 10 }}
+                        type="button"
+                        onClick={login}>
+                        로그인
+                    </SubmitButton>
+                    <button className="reset-password">
+                        비밀번호 초기화/변경
+                    </button>
+                </div>
             </Wrap>
         </Modal>
     );
@@ -434,6 +513,25 @@ const Wrap = styled.div`
     .modal-body {
         padding: 20px;
         padding-bottom: 0px;
+    }
+
+    .password-modal-body {
+        padding: 20px;
+
+        .reset-password {
+            background-color: transparent;
+            font-size: 14px;
+            color: #36f;
+            margin-top: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 54px;
+            border: 0;
+            font-weight: 600;
+            cursor: pointer;
+        }
     }
 
     .style-wrap {
