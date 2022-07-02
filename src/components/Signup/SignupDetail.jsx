@@ -3,7 +3,7 @@ import styled from "styled-components";
 import Modal from "../common/Modal";
 import { IoIosArrowForward } from "react-icons/io";
 import axios from "axios";
-import { api } from "../../api/api";
+import { api } from "../../lib/api/api";
 import { useSelector, useDispatch } from "react-redux";
 import { useCookies } from "react-cookie";
 import { loginAction } from "../../store/actions/login";

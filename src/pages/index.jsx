@@ -12,7 +12,7 @@ import tag08 from "../assets/imgs/img-tag-08.png";
 
 import Card from "../components/common/Card";
 import axios from "axios";
-import { api } from "../api/api";
+import { api } from "../lib/api/api";
 
 const tags = [
     { label: "연봉이 최고의 복지", src: tag01 },
