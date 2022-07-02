@@ -4,3 +4,7 @@ export const loginAction = (data) => {
         data,
     };
 };
+
+export const logoutAction = () => {
+    return { type: "LOGOUT" };
+};
