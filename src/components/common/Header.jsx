@@ -14,6 +14,20 @@ const Header = () => {
 
     const isLogined = useSelector((state) => state.loginReducer.isLogin);
 
+    const [category, setCategory] = useState([
+        { name: "채용", url: "recruit", isClicked: false },
+        { name: "이벤트", url: "event", isClicked: false },
+        { name: "직군별 연봉", url: "salary", isClicked: false },
+        {
+            name: "이력서",
+            url: `cv/${isLogined ? "list" : "intro"}`,
+            isClicked: false,
+        },
+        { name: "커뮤니티", url: "community", isClicked: false },
+        { name: "프리랜서", url: "freelancer", isClicked: false },
+        { name: "AI 합격예측", url: "ai", isClicked: false },
+    ]);
+
     const [openSignupModal, setOpenSignupModal] = useState(false);
     const [openSignupDetailModal, setOpenSignupDetailModal] = useState(false);
     const [isProfileOpened, setIsProfileOpened] = useState(false);
@@ -35,18 +49,27 @@ const Header = () => {
                             src={hamburger}
                             alt="hamburger-img"
                         />
-                        <Link to="/">
+                        <Link to="/recruit">
                             <img className="logo-img" src={logo} alt="logo" />
                         </Link>
                     </div>
                     <ul className="menu">
-                        <li>채용</li>
-                        <li>이벤트</li>
-                        <li>직군별 연봉</li>
-                        <li>이력서</li>
-                        <li>커뮤니티</li>
-                        <li>프리랜서</li>
-                        <li>AI 합격예측</li>
+                        {category.map((data, idx) => (
+                            <Link to={"/" + data.url} key={idx}>
+                                <Category
+                                    isClicked={data.isClicked}
+                                    onClick={(e) => {
+                                        let list = [...category];
+                                        list.forEach((d, i) => {
+                                            if (idx === i) d.isClicked = true;
+                                            else d.isClicked = false;
+                                        });
+                                        setCategory(list);
+                                    }}>
+                                    {data.name}
+                                </Category>
+                            </Link>
+                        ))}
                     </ul>
                     <aside className="header-aside">
                         <button className="search-btn">
@@ -232,17 +255,6 @@ const Wrap = styled.div`
         align-items: center;
         height: 50px;
         padding: 0;
-        & > li {
-            list-style: none;
-            line-height: 20px;
-            padding: 15px;
-            border-top: 2px solid transparent;
-            border-bottom: 2px solid transparent;
-            &:hover {
-                cursor: pointer;
-                border-bottom: 2px solid gray;
-            }
-        }
     }
 
     & .header-aside {
@@ -374,6 +386,18 @@ const Profile = styled.div`
         background-size: cover;
         background-position: 50%;
         background-image: url(https://s3.ap-northeast-2.amazonaws.com/wanted-public/profile_default.png);
+    }
+`;
+const Category = styled.li`
+    list-style: none;
+    line-height: 20px;
+    padding: 15px;
+    border-top: 2px solid transparent;
+    border-bottom: 2px solid
+        ${(props) => (props.isClicked ? "#36f" : "transparent")};
+    &:hover {
+        cursor: pointer;
+        border-bottom: 2px solid gray;
     }
 `;
 export default Header;

@@ -9,7 +9,7 @@ const RootRoute = () => {
     return (
         <BrowserRouter>
             <Routes>
-                <Route path="/" element={<RecruitmentPage />} />
+                <Route path="/recruit" element={<RecruitmentPage />} />
                 <Route path="/recruit-detail/:id" element={<RecruitDetail />} />
                 <Route path="/cv/intro" element={<CVIntro />} />
                 <Route path="/cv/list" element={<CVList />} />
