@@ -8,6 +8,10 @@ import b from "../../assets/imgs/img-logo.png";
 import c from "../../assets/imgs/img-tag-06.png";
 import { IoIosHeart } from "react-icons/io";
 import Card from "../../components/common/Card";
+import axios from "axios";
+import { api } from "../../lib/api/api";
+import { useParams } from "react-router-dom";
+import { getCookie } from "../../lib/cookies/cookie";
 
 const card = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
 const tags = [
@@ -22,23 +26,42 @@ const tags = [
     "IT, 컨텐츠",
 ];
 const RecruitDetail = () => {
+    const id = useParams().id;
+    const accessToken = getCookie("accessToken");
     const { naver } = window;
     let map = null;
 
+    const [isBookmarked, setIsBookmarked] = useState();
+    const [isLiked, setIsLiked] = useState();
     const [warningOpen, setWarningOpen] = useState(false);
     const [position, setPosition] = useState({
         lat: 0,
         lon: 0,
     });
     const { lat, lon } = position;
+    const [recruitInfo, setRecruitInfo] = useState({});
 
     useEffect(() => {
         geocoding();
+        getRecruit();
     }, []);
 
     useEffect(() => {
         if (lat !== 0 && lon !== 0) initMap();
     }, [position]);
+
+    const getRecruit = () => {
+        axios
+            .get(api + `recruits/${id}`)
+            .then((res) => {
+                console.log("res :>> ", res.data.result);
+                if (res.data.isSuccess) setRecruitInfo(res.data.result);
+                else alert(res.data.message);
+            })
+            .catch((e) => {
+                console.log("e :>> ", e);
+            });
+    };
 
     const geocoding = () => {
         // 주소 -> 좌표로 변경
@@ -75,6 +98,52 @@ const RecruitDetail = () => {
         map = new naver.maps.Map("map", mapOptions);
     }; //end initMap
 
+    const doBookmark = () => {
+        axios
+            .post(
+                api + `recruits/${id}/bookmarks`,
+                {},
+                {
+                    headers: {
+                        "X-Access-Token": accessToken,
+                    },
+                    withCredentials: true,
+                }
+            )
+            .then((res) => {
+                console.log("res :>> ", res);
+                if (res.data.isSuccess) {
+                    setIsBookmarked(!res.data.result.status); //0이면 북마크, 1이면 취소
+                } else alert(res.data.message);
+            })
+            .catch((e) => {
+                console.log("e :>> ", e);
+            });
+    };
+
+    const doLike = () => {
+        axios
+            .post(
+                api + `recruits/${id}/likemarks`,
+                {},
+                {
+                    headers: {
+                        "X-Access-Token": accessToken,
+                    },
+                    withCredentials: true,
+                }
+            )
+            .then((res) => {
+                console.log("res :>> ", res);
+                if (res.data.isSuccess) {
+                    setIsLiked(!res.data.result.status); //0이면 라이크, 1이면 취소
+                } else alert(res.data.message);
+            })
+            .catch((e) => {
+                console.log("e :>> ", e);
+            });
+    };
+
     return (
         <Wrap>
             <Header />
@@ -83,11 +152,13 @@ const RecruitDetail = () => {
                     <div className="job-content">
                         <Carousel images={[a, b, c]} />
                         <section className="job-header">
-                            <h2>IT솔루션 개발 및 운영</h2>
+                            <h2>{recruitInfo.title}</h2>
                             <div>
-                                <h6>유와이즈원</h6>
+                                <h6>{recruitInfo.company_name}</h6>
                                 <div className="job-header-response-level">
-                                    <button>응답률 매우 높음</button>
+                                    {recruitInfo.response_rate > 0.9 ? (
+                                        <button>응답률 매우 높음</button>
+                                    ) : null}
                                 </div>
                                 <span>|</span>
                                 <span className="job-header-location">
@@ -229,7 +300,9 @@ const RecruitDetail = () => {
                         <section className="job-work-place">
                             <div>
                                 <span className="header">마감일</span>
-                                <span className="body">2022.07.08</span>
+                                <span className="body">
+                                    {recruitInfo.deadline?.replace(/-/gi, ".")}
+                                </span>
                             </div>
                             <div>
                                 <span className="header">근무지역</span>
@@ -243,7 +316,7 @@ const RecruitDetail = () => {
                             <button>
                                 <div className="logo"></div>
                                 <div>
-                                    <h5>유와이즈원</h5>
+                                    <h5>{recruitInfo.company_name}</h5>
                                     <h6>IT, 컨텐츠</h6>
                                 </div>
                             </button>
@@ -283,7 +356,8 @@ const RecruitDetail = () => {
                             </div>
                             <WarningBody open={warningOpen}>
                                 <p>
-                                    본 채용 정보는 <strong>유와이즈원</strong>
+                                    본 채용 정보는{" "}
+                                    <strong>{recruitInfo.company_name}</strong>
                                     에서 제공한 자료를 바탕으로 원티드랩에서
                                     표현을 수정하고 이의 배열 및 구성을 편집하여
                                     완성한 원티드랩의 저작자산이자
@@ -293,7 +367,7 @@ const RecruitDetail = () => {
                                     크롤링할 수 없으며, 게재된 채용기업의 정보는
                                     구직자의 구직활동 이외의 용도로 사용될 수
                                     없습니다. 원티드랩은{" "}
-                                    <strong>유와이즈원</strong>
+                                    <strong>{recruitInfo.company_name}</strong>
                                     에서 게재한 자료에 대한 오류나 그 밖에
                                     원티드랩이 가공하지 않은 정보의 내용상
                                     문제에 대하여 어떠한 보장도 하지 않으며,
@@ -327,7 +401,8 @@ const RecruitDetail = () => {
                                         xmlnsXlink="https://www.w3.org/1999/xlink"
                                         width="20"
                                         height="20"
-                                        viewBox="0 0 19 19">
+                                        viewBox="0 0 19 19"
+                                        fill="blue">
                                         <defs>
                                             <path
                                                 id="shareIcon"
@@ -341,33 +416,62 @@ const RecruitDetail = () => {
                                     </svg>
                                 </button>
                             </div>
-                            <button className="bookmark-button">
-                                <svg
-                                    width="13"
-                                    height="17"
-                                    viewBox="0 0 13 17"
-                                    style={{
-                                        color: "rgb(51, 102, 255)",
-                                        marginRight: 8,
-                                    }}>
-                                    <defs>
-                                        <path
-                                            id="bookmarkIconLine"
-                                            d="M1.481 1.481h9.382v10.727c0 .409.331.74.74.74.41 0 .741-.331.741-.74V.74c0-.41-.331-.741-.74-.741H.74C.33 0 0 .332 0 .74v14.814c0 .568.614.925 1.108.643l5.18-2.873 5.104 2.873c.355.203.807.08 1.01-.276.203-.355.08-.808-.275-1.01l-5.471-3.083c-.228-.13-.507-.13-.735 0l-4.44 2.45V1.48z"></path>
-                                    </defs>
-                                    <g fill="none" fillRule="evenodd">
-                                        <use
-                                            fill="currentColor"
-                                            xlinkHref="#bookmarkIconLine"></use>
-                                    </g>
-                                </svg>
-                                북마크하기
+                            <button
+                                className="bookmark-button"
+                                onClick={doBookmark}>
+                                {isBookmarked ? (
+                                    <svg
+                                        width="13"
+                                        height="17"
+                                        viewBox="0 0 13 17"
+                                        style={{
+                                            color: "rgb(51, 102, 255)",
+                                            marginRight: 8,
+                                        }}>
+                                        <defs>
+                                            <path
+                                                id="bookmarkIconFill"
+                                                d="M6.25 13.21L.905 16.22c-.403.228-.905-.06-.905-.517V.596C0 .267.27 0 .605 0h11.29c.334 0 .605.267.605.596v15.107c0 .458-.502.745-.905.518L6.25 13.209z"></path>
+                                        </defs>
+                                        <g
+                                            fill="none"
+                                            fill-rule="evenodd"
+                                            transform="translate(.188)">
+                                            <use
+                                                fill="currentColor"
+                                                xlinkHref="#bookmarkIconFill"></use>
+                                        </g>
+                                    </svg>
+                                ) : (
+                                    <svg
+                                        width="13"
+                                        height="17"
+                                        viewBox="0 0 13 17"
+                                        style={{
+                                            color: "rgb(51, 102, 255)",
+                                            marginRight: 8,
+                                        }}>
+                                        <defs>
+                                            <path
+                                                id="bookmarkIconLine"
+                                                d="M1.481 1.481h9.382v10.727c0 .409.331.74.74.74.41 0 .741-.331.741-.74V.74c0-.41-.331-.741-.74-.741H.74C.33 0 0 .332 0 .74v14.814c0 .568.614.925 1.108.643l5.18-2.873 5.104 2.873c.355.203.807.08 1.01-.276.203-.355.08-.808-.275-1.01l-5.471-3.083c-.228-.13-.507-.13-.735 0l-4.44 2.45V1.48z"></path>
+                                        </defs>
+                                        <g fill="none" fillRule="evenodd">
+                                            <use
+                                                fill="currentColor"
+                                                xlinkHref="#bookmarkIconLine"></use>
+                                        </g>
+                                    </svg>
+                                )}
+                                {isBookmarked ? "북마크 완료" : "북마크하기"}
                             </button>
                             <button className="apply-button">지원하기</button>
                             <div className="reaction-wrap">
-                                <button>
+                                <button onClick={doLike}>
                                     <IoIosHeart
-                                        fill="rgb(219,219,219)"
+                                        fill={
+                                            isLiked ? "red" : "rgb(219,219,219)"
+                                        }
                                         style={{
                                             marginRight: 10,
                                             width: 16,
@@ -779,5 +883,8 @@ const WarningBody = styled.div`
     border-top: 1px solid rgb(236, 236, 236);
     font-size: 13px;
     line-height: 24px;
+    & strong {
+        font-weight: bold;
+    }
 `;
 export default RecruitDetail;
