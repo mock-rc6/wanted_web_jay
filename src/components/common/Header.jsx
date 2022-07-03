@@ -28,6 +28,7 @@ const Header = () => {
         { name: "AI 합격예측", url: "ai", isClicked: false },
     ]);
 
+    const [status, setStatus] = useState(""); //로그인 or 회원가입
     const [openSignupModal, setOpenSignupModal] = useState(false);
     const [openSignupDetailModal, setOpenSignupDetailModal] = useState(false);
     const [isProfileOpened, setIsProfileOpened] = useState(false);
@@ -192,6 +193,7 @@ const Header = () => {
                 </nav>
             </div>
             <Signup
+                setStatus={setStatus}
                 width={400}
                 modalStatus={openSignupModal}
                 closeModal={() => {
@@ -200,6 +202,7 @@ const Header = () => {
                 setOpenSignupDetailModal={setOpenSignupDetailModal}
             />
             <SignupDetail
+                status={status}
                 width={400}
                 modalStatus={openSignupDetailModal}
                 closeModal={() => {

@@ -4,12 +4,15 @@ import Modal from "../common/Modal";
 import logo from "../../assets/imgs/img-logo.png";
 import { useDispatch } from "react-redux";
 import { dispatchEmail } from "../../store/actions/signup";
+import axios from "axios";
+import { api } from "../../lib/api/api";
 
 const Signup = ({
     width,
     modalStatus,
     closeModal,
     setOpenSignupDetailModal,
+    setStatus,
 }) => {
     const ref = useRef();
     const dispatch = useDispatch();
@@ -32,6 +35,18 @@ const Signup = ({
 
     const checkEmailValid = (email) => {
         if (emailRegExp(email)) {
+            //가입된 이메일인지 확인
+            axios
+                .get(api + `users/emails?email=${email}`)
+                .then((res) => {
+                    console.log("res :>> ", res);
+                    if (res.data.isSuccess) {
+                        setStatus("signup");
+                    } else if (res.data.code === 2017) setStatus("login");
+                })
+                .catch((e) => {
+                    console.log("e :>> ", e);
+                });
             closeModal();
             setOpenSignupDetailModal(true);
             setIsValid(true);

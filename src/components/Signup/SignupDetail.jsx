@@ -13,7 +13,7 @@ const mobileOptions = [
     { value: "+81", data: "Japan" },
     { value: "+1", data: "United States" },
 ];
-const SignupDetail = ({ width, modalStatus, closeModal }) => {
+const SignupDetail = ({ width, modalStatus, closeModal, status }) => {
     const dispatch = useDispatch();
     const passwordRef = useRef();
     const passwordMsgRef = useRef();
@@ -43,8 +43,6 @@ const SignupDetail = ({ width, modalStatus, closeModal }) => {
     const [passwordRight, setPasswordRight] = useState(false);
     const [pw, setPw] = useState("");
 
-    //useEffect로 해당 이메일의 가입여부 확인
-
     useEffect(() => {
         checkPhoneNum(phoneNum);
     }, [phoneNum]);
@@ -66,16 +64,23 @@ const SignupDetail = ({ width, modalStatus, closeModal }) => {
     }, [passwordCheck]);
 
     const close = () => {
-        setForm({ name: "", phoneNum: "", password: "", passwordCheck: "" });
-        setPhoneNumIsValid(false);
-        setCodeSuccess(false);
-        setCode("");
-        setToken("");
-        setShowCodeMsg(false);
-        setCodeIsValid(0);
-        setIsPasswordSame(true);
-        setPasswordRight(false);
-        if (window.confirm("회원가입을 취소하시겠습니까?")) closeModal();
+        if (status === "signup") {
+            setForm({
+                name: "",
+                phoneNum: "",
+                password: "",
+                passwordCheck: "",
+            });
+            setPhoneNumIsValid(false);
+            setCodeSuccess(false);
+            setCode("");
+            setToken("");
+            setShowCodeMsg(false);
+            setCodeIsValid(0);
+            setIsPasswordSame(true);
+            setPasswordRight(false);
+            if (window.confirm("회원가입을 취소하시겠습니까?")) closeModal();
+        } else closeModal();
     };
 
     const phoneNumRegExp = (num) => {
@@ -257,234 +262,246 @@ const SignupDetail = ({ width, modalStatus, closeModal }) => {
     };
     return (
         <Modal width={width} modalStatus={modalStatus} closeModal={close}>
-            {/* <Wrap>
-                <div className="modal-header">
-                    회원가입
-                    <button onClick={close}>
-                        <svg
-                            width="24"
-                            height="24"
-                            viewBox="0 0 24 24"
-                            color="#999">
-                            <path
-                                fill="currentColor"
-                                d="M17.97 19.03a.75.75 0 001.06-1.06l-6.5-6.5a.75.75 0 00-1.06 0l-6.5 6.5a.75.75 0 001.06 1.06L12 13.06l5.97 5.97zM12 10.94L6.03 4.97a.75.75 0 00-1.06 1.06l6.5 6.5a.75.75 0 001.06 0l6.5-6.5a.75.75 0 00-1.06-1.06L12 10.94z"></path>
-                        </svg>
-                    </button>
-                </div>
-                <div className="modal-body">
-                    <form>
-                        <div className="style-wrap">
-                            <label htmlFor="userName">이름</label>
-                            <div className="style-body">
-                                <input
-                                    type="text"
-                                    placeholder="이름을 입력해 주세요."
-                                    id="userName"
-                                    autoFocus
-                                    name="name"
-                                    onChange={handleForm}
-                                />
-                            </div>
-                        </div>
-                        <div className="style-wrap">
-                            <label>휴대폰 번호</label>
-                            <div className="style-body">
-                                <div className="mobile-select">
-                                    <select>
-                                        {mobileOptions.map((data, idx) => (
-                                            <option
-                                                key={idx}
-                                                value={data.value}>
-                                                {data.value}&nbsp;{data.data}
-                                            </option>
-                                        ))}
-                                    </select>
-                                    <IoIosArrowForward
-                                        style={{
-                                            position: "absolute",
-                                            right: 10,
-                                            top: "50%",
-                                            transform: "translateY(-50%)",
-                                        }}
-                                    />
-                                </div>
-                                <div className="mobile-input">
-                                    <input
-                                        className="user-phone-number"
-                                        placeholder="(예시) 010-3456-7890"
-                                        onChange={handleForm}
-                                        name="phoneNum"
-                                    />
-                                    <GetCodeButton
-                                        type="button"
-                                        isValid={phoneNumIsValid}
-                                        disabled={
-                                            phoneNumIsValid ? false : true
-                                        }
-                                        onClick={getCode}>
-                                        인증번호 받기
-                                    </GetCodeButton>
-                                </div>
-                                <div className="input-code-wrap">
-                                    <input
-                                        placeholder="인증번호를 입력해 주세요."
-                                        disabled={codeSuccess ? false : true}
-                                        onChange={handleCode}
-                                        ref={codeRef}
-                                    />
-                                    {codeIsValid === 1 ? (
-                                        <div className="input-code-success">
-                                            <span>일치</span>
-                                            <svg
-                                                class="SvgIcon_SvgIconrootsvg__DKYBi"
-                                                viewBox="0 0 15 15"
-                                                style={{
-                                                    width: 13,
-                                                    height: 13,
-                                                }}>
-                                                <defs>
-                                                    <path
-                                                        id="al3je9dvha"
-                                                        d="M576.95 196.13c-.217-.217-.57-.217-.787 0-.217.218-.217.57 0 .788l3.71 3.71c.217.217.57.217.787 0l6.677-6.678c.217-.217.217-.57 0-.787-.217-.217-.57-.217-.787 0l-6.284 6.284-3.316-3.316z"></path>
-                                                </defs>
-                                                <g
-                                                    fill="currentColor"
-                                                    fillRule="evenodd">
-                                                    <g transform="translate(-575 -192)">
-                                                        <use
-                                                            fill="blue"
-                                                            fillRule="nonzero"
-                                                            stroke="#FFF"
-                                                            strokeWidth=".3"
-                                                            xlinkHref="#al3je9dvha"></use>
-                                                    </g>
-                                                </g>
-                                            </svg>
-                                        </div>
-                                    ) : (
-                                        <InputCodeButton
-                                            type="button"
-                                            onClick={checkCode}
-                                            code={code}>
-                                            확인
-                                        </InputCodeButton>
-                                    )}
-                                </div>
-                                <CodeMsg show={showCodeMsg} valid={codeIsValid}>
-                                    {codeIsValid === 0
-                                        ? "인증번호가 요청되었습니다."
-                                        : codeIsValid === 1
-                                        ? "인증 되었습니다."
-                                        : "인증번호가 잘못되었습니다."}
-                                </CodeMsg>
-                            </div>
-                        </div>
-                        <div className="style-wrap">
-                            <label htmlFor="userPassword">비밀번호</label>
-                            <div className="style-body">
-                                <input
-                                    type="password"
-                                    placeholder="비밀번호를 입력해 주세요."
-                                    id="userPassword"
-                                    name="password"
-                                    onChange={handleForm}
-                                    ref={passwordRef}
-                                />
-                            </div>
-                            <div className="style-guide" ref={passwordMsgRef}>
-                                영문 대소문자, 숫자, 특수문자를 3가지 이상으로
-                                조합하여 8자 이상 입력해 주세요.
-                            </div>
-                        </div>
-                        <div className="style-wrap">
-                            <label htmlFor="userPasswordRepeat">
-                                비밀번호 확인
-                            </label>
-                            <div className="style-body">
-                                <input
-                                    type="password"
-                                    placeholder="비밀번호를 다시 한번 입력해 주세요."
-                                    id="userPasswordRepeat"
-                                    name="passwordCheck"
-                                    onChange={handleForm}
-                                    ref={passwordCheckRef}
-                                />
-                            </div>
-                            <PasswordMsg
-                                className="style-guide"
-                                same={isPasswordSame}>
-                                비밀번호가 일치하지 않습니다.
-                            </PasswordMsg>
-                        </div>
-                        <div className="agree-wrap">
-                            <div className="check-all check">
-                                <input type="checkbox" />
-                                전체 동의
-                            </div>
-                            <div className="check">
-                                <input type="checkbox" />
-                                개인정보 수집 및 이용 동의 (필수)
-                                <span>자세히</span>
-                            </div>
-                            <div className="check" style={{ marginTop: 15 }}>
-                                <input type="checkbox" />
-                                이벤트 소식 등 알림 정보 받기
-                                <span>자세히</span>
-                            </div>
-                        </div>
-                    </form>
-                    <SubmitButtonWrap>
-                        <div>
-                            <SubmitButton
-                                type="submit"
-                                onClick={submit}
-                                ref={buttonRef}>
-                                회원가입하기
-                            </SubmitButton>
-                        </div>
-                    </SubmitButtonWrap>
-                </div>
-            </Wrap> */}
-            <Wrap>
-                <div className="modal-header">
-                    비밀번호 입력
-                    <button onClick={close}>
-                        <svg
-                            width="24"
-                            height="24"
-                            viewBox="0 0 24 24"
-                            color="#999">
-                            <path
-                                fill="currentColor"
-                                d="M17.97 19.03a.75.75 0 001.06-1.06l-6.5-6.5a.75.75 0 00-1.06 0l-6.5 6.5a.75.75 0 001.06 1.06L12 13.06l5.97 5.97zM12 10.94L6.03 4.97a.75.75 0 00-1.06 1.06l6.5 6.5a.75.75 0 001.06 0l6.5-6.5a.75.75 0 00-1.06-1.06L12 10.94z"></path>
-                        </svg>
-                    </button>
-                </div>
-                <div className="password-modal-body">
-                    <div className="style-wrap">
-                        <label htmlFor="password">비밀번호</label>
-                        <div className="style-body">
-                            <input
-                                type="password"
-                                placeholder="비밀번호"
-                                id="password"
-                                onChange={handlePassword}
-                                autoFocus
-                            />
-                        </div>
+            {status === "signup" ? (
+                <Wrap>
+                    <div className="modal-header">
+                        회원가입
+                        <button onClick={close}>
+                            <svg
+                                width="24"
+                                height="24"
+                                viewBox="0 0 24 24"
+                                color="#999">
+                                <path
+                                    fill="currentColor"
+                                    d="M17.97 19.03a.75.75 0 001.06-1.06l-6.5-6.5a.75.75 0 00-1.06 0l-6.5 6.5a.75.75 0 001.06 1.06L12 13.06l5.97 5.97zM12 10.94L6.03 4.97a.75.75 0 00-1.06 1.06l6.5 6.5a.75.75 0 001.06 0l6.5-6.5a.75.75 0 00-1.06-1.06L12 10.94z"></path>
+                            </svg>
+                        </button>
                     </div>
-                    <SubmitButton
-                        style={{ marginTop: 10 }}
-                        type="button"
-                        onClick={login}>
-                        로그인
-                    </SubmitButton>
-                    <button className="reset-password">
-                        비밀번호 초기화/변경
-                    </button>
-                </div>
-            </Wrap>
+                    <div className="modal-body">
+                        <form>
+                            <div className="style-wrap">
+                                <label htmlFor="userName">이름</label>
+                                <div className="style-body">
+                                    <input
+                                        type="text"
+                                        placeholder="이름을 입력해 주세요."
+                                        id="userName"
+                                        autoFocus
+                                        name="name"
+                                        onChange={handleForm}
+                                    />
+                                </div>
+                            </div>
+                            <div className="style-wrap">
+                                <label>휴대폰 번호</label>
+                                <div className="style-body">
+                                    <div className="mobile-select">
+                                        <select>
+                                            {mobileOptions.map((data, idx) => (
+                                                <option
+                                                    key={idx}
+                                                    value={data.value}>
+                                                    {data.value}&nbsp;
+                                                    {data.data}
+                                                </option>
+                                            ))}
+                                        </select>
+                                        <IoIosArrowForward
+                                            style={{
+                                                position: "absolute",
+                                                right: 10,
+                                                top: "50%",
+                                                transform: "translateY(-50%)",
+                                            }}
+                                        />
+                                    </div>
+                                    <div className="mobile-input">
+                                        <input
+                                            className="user-phone-number"
+                                            placeholder="(예시) 010-3456-7890"
+                                            onChange={handleForm}
+                                            name="phoneNum"
+                                        />
+                                        <GetCodeButton
+                                            type="button"
+                                            isValid={phoneNumIsValid}
+                                            disabled={
+                                                phoneNumIsValid ? false : true
+                                            }
+                                            onClick={getCode}>
+                                            인증번호 받기
+                                        </GetCodeButton>
+                                    </div>
+                                    <div className="input-code-wrap">
+                                        <input
+                                            placeholder="인증번호를 입력해 주세요."
+                                            disabled={
+                                                codeSuccess ? false : true
+                                            }
+                                            onChange={handleCode}
+                                            ref={codeRef}
+                                        />
+                                        {codeIsValid === 1 ? (
+                                            <div className="input-code-success">
+                                                <span>일치</span>
+                                                <svg
+                                                    class="SvgIcon_SvgIconrootsvg__DKYBi"
+                                                    viewBox="0 0 15 15"
+                                                    style={{
+                                                        width: 13,
+                                                        height: 13,
+                                                    }}>
+                                                    <defs>
+                                                        <path
+                                                            id="al3je9dvha"
+                                                            d="M576.95 196.13c-.217-.217-.57-.217-.787 0-.217.218-.217.57 0 .788l3.71 3.71c.217.217.57.217.787 0l6.677-6.678c.217-.217.217-.57 0-.787-.217-.217-.57-.217-.787 0l-6.284 6.284-3.316-3.316z"></path>
+                                                    </defs>
+                                                    <g
+                                                        fill="currentColor"
+                                                        fillRule="evenodd">
+                                                        <g transform="translate(-575 -192)">
+                                                            <use
+                                                                fill="blue"
+                                                                fillRule="nonzero"
+                                                                stroke="#FFF"
+                                                                strokeWidth=".3"
+                                                                xlinkHref="#al3je9dvha"></use>
+                                                        </g>
+                                                    </g>
+                                                </svg>
+                                            </div>
+                                        ) : (
+                                            <InputCodeButton
+                                                type="button"
+                                                onClick={checkCode}
+                                                code={code}>
+                                                확인
+                                            </InputCodeButton>
+                                        )}
+                                    </div>
+                                    <CodeMsg
+                                        show={showCodeMsg}
+                                        valid={codeIsValid}>
+                                        {codeIsValid === 0
+                                            ? "인증번호가 요청되었습니다."
+                                            : codeIsValid === 1
+                                            ? "인증 되었습니다."
+                                            : "인증번호가 잘못되었습니다."}
+                                    </CodeMsg>
+                                </div>
+                            </div>
+                            <div className="style-wrap">
+                                <label htmlFor="userPassword">비밀번호</label>
+                                <div className="style-body">
+                                    <input
+                                        type="password"
+                                        placeholder="비밀번호를 입력해 주세요."
+                                        id="userPassword"
+                                        name="password"
+                                        onChange={handleForm}
+                                        ref={passwordRef}
+                                    />
+                                </div>
+                                <div
+                                    className="style-guide"
+                                    ref={passwordMsgRef}>
+                                    영문 대소문자, 숫자, 특수문자를 3가지
+                                    이상으로 조합하여 8자 이상 입력해 주세요.
+                                </div>
+                            </div>
+                            <div className="style-wrap">
+                                <label htmlFor="userPasswordRepeat">
+                                    비밀번호 확인
+                                </label>
+                                <div className="style-body">
+                                    <input
+                                        type="password"
+                                        placeholder="비밀번호를 다시 한번 입력해 주세요."
+                                        id="userPasswordRepeat"
+                                        name="passwordCheck"
+                                        onChange={handleForm}
+                                        ref={passwordCheckRef}
+                                    />
+                                </div>
+                                <PasswordMsg
+                                    className="style-guide"
+                                    same={isPasswordSame}>
+                                    비밀번호가 일치하지 않습니다.
+                                </PasswordMsg>
+                            </div>
+                            <div className="agree-wrap">
+                                <div className="check-all check">
+                                    <input type="checkbox" />
+                                    전체 동의
+                                </div>
+                                <div className="check">
+                                    <input type="checkbox" />
+                                    개인정보 수집 및 이용 동의 (필수)
+                                    <span>자세히</span>
+                                </div>
+                                <div
+                                    className="check"
+                                    style={{ marginTop: 15 }}>
+                                    <input type="checkbox" />
+                                    이벤트 소식 등 알림 정보 받기
+                                    <span>자세히</span>
+                                </div>
+                            </div>
+                        </form>
+                        <SubmitButtonWrap>
+                            <div>
+                                <SubmitButton
+                                    type="submit"
+                                    onClick={submit}
+                                    ref={buttonRef}>
+                                    회원가입하기
+                                </SubmitButton>
+                            </div>
+                        </SubmitButtonWrap>
+                    </div>
+                </Wrap>
+            ) : status === "login" ? (
+                <Wrap>
+                    <div className="modal-header">
+                        비밀번호 입력
+                        <button onClick={close}>
+                            <svg
+                                width="24"
+                                height="24"
+                                viewBox="0 0 24 24"
+                                color="#999">
+                                <path
+                                    fill="currentColor"
+                                    d="M17.97 19.03a.75.75 0 001.06-1.06l-6.5-6.5a.75.75 0 00-1.06 0l-6.5 6.5a.75.75 0 001.06 1.06L12 13.06l5.97 5.97zM12 10.94L6.03 4.97a.75.75 0 00-1.06 1.06l6.5 6.5a.75.75 0 001.06 0l6.5-6.5a.75.75 0 00-1.06-1.06L12 10.94z"></path>
+                            </svg>
+                        </button>
+                    </div>
+                    <div className="password-modal-body">
+                        <div className="style-wrap">
+                            <label htmlFor="password">비밀번호</label>
+                            <div className="style-body">
+                                <input
+                                    type="password"
+                                    placeholder="비밀번호"
+                                    id="password"
+                                    onChange={handlePassword}
+                                    autoFocus
+                                />
+                            </div>
+                        </div>
+                        <SubmitButton
+                            style={{ marginTop: 10 }}
+                            type="button"
+                            onClick={login}>
+                            로그인
+                        </SubmitButton>
+                        <button className="reset-password">
+                            비밀번호 초기화/변경
+                        </button>
+                    </div>
+                </Wrap>
+            ) : null}
         </Modal>
     );
 };
