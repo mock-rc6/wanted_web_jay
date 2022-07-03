@@ -13,6 +13,7 @@ import tag08 from "../assets/imgs/img-tag-08.png";
 import Card from "../components/common/Card";
 import axios from "axios";
 import { api } from "../lib/api/api";
+import LocationModal from "../components/Recruit/LocationModal";
 
 const tags = [
     { label: "연봉이 최고의 복지", src: tag01 },
@@ -46,6 +47,9 @@ const RecruitmentPage = () => {
     const [jobGroupId, setJobGroupId] = useState("");
     const [jobCategory, setJobCategory] = useState([]); //선택된 포지션
     const [jobCategoryId, setJobCategoryId] = useState([]);
+    const [locations, setLocations] = useState(["한국.전국"]); //선택된 지역
+
+    const [locationModalOpen, setLocationModalOpen] = useState(false);
 
     const [jobCategoryList, setJobCategoryList] = useState([
         { category: "개발 전체", isClicked: true, id: "all" },
@@ -60,6 +64,7 @@ const RecruitmentPage = () => {
     ]);
 
     useEffect(() => {
+        console.log("locations :>> ", locations);
         axios
             .get(
                 api +
@@ -71,7 +76,7 @@ const RecruitmentPage = () => {
                             : jobCategoryId
                                   .map((data) => `positions=${data}&`)
                                   .join("")
-                    }`
+                    }${locations.map((data) => `locations=${data}&`)}`
             )
             .then((res) => {
                 console.log("res :>> ", res);
@@ -81,7 +86,7 @@ const RecruitmentPage = () => {
             .catch((e) => {
                 console.log("e :>> ", e);
             });
-    }, [jobGroupId, jobCategoryId]);
+    }, [jobGroupId, jobCategoryId, locations]);
 
     useEffect(() => {
         setJobGroupButton(false);
@@ -229,9 +234,22 @@ const RecruitmentPage = () => {
                     <div className="filter-wrap">
                         <div>
                             <div className="filterbar">
-                                <FilterButton>
+                                <FilterButton
+                                    onClick={() => {
+                                        setLocationModalOpen(
+                                            !locationModalOpen
+                                        );
+                                    }}>
                                     <span>지역</span>
-                                    <span>한국</span>
+                                    <span>
+                                        {locations.length === 1
+                                            ? locations[0].split(".")[0]
+                                            : locations[0].split(".")[0] +
+                                              " 외"}
+                                    </span>
+                                    <span className="filtered-count">
+                                        {locations.length}
+                                    </span>
                                 </FilterButton>
                                 <FilterButton
                                     onClick={() => {
@@ -356,6 +374,14 @@ const RecruitmentPage = () => {
                     </div>
                 </div>
             </div>
+            <LocationModal
+                width={500}
+                modalStatus={locationModalOpen}
+                closeModal={() => {
+                    setLocationModalOpen(false);
+                }}
+                setLocations={setLocations}
+            />
         </Wrap>
     );
 };
@@ -516,6 +542,25 @@ const FilterButton = styled.button`
     border: 1px solid #cccccc;
     border-radius: 5px;
     font-weight: 600;
+    position: relative;
+
+    .filtered-count {
+        position: absolute;
+        top: 4px;
+        right: 0;
+        transform: translate(50%, -50%);
+        background-color: #36f;
+        border-radius: 10px;
+        color: #fff;
+        width: 20px;
+        height: 20px;
+        font-size: 12px;
+        font-weight: 600;
+        white-space: nowrap;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
 
     &:hover {
         cursor: pointer;
