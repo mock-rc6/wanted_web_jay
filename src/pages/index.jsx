@@ -76,7 +76,7 @@ const RecruitmentPage = () => {
             .then((res) => {
                 console.log("res :>> ", res);
                 console.log("URL :>> ", res.request.responseURL);
-                setGridItems(res.data.result);
+                setGridItems(res.data.result.recruits);
             })
             .catch((e) => {
                 console.log("e :>> ", e);
