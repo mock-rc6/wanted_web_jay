@@ -76,7 +76,10 @@ const RecruitmentPage = () => {
                             : jobCategoryId
                                   .map((data) => `positions=${data}&`)
                                   .join("")
-                    }${locations.map((data) => `locations=${data}&`)}`
+                    }${
+                        locations[0] !== "한국.전국" &&
+                        locations.map((data) => `locations=${data}&`)
+                    }`
             )
             .then((res) => {
                 console.log("res :>> ", res);
