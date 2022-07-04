@@ -37,19 +37,22 @@ const jobGroupList = [
 
 const RecruitmentPage = () => {
     const [gridItems, setGridItems] = useState([]);
-    const [careerFilterButton, setCareerFilterButton] = useState(false);
-    const [techStackFilterButton, setTechStackFilterButton] = useState(false);
-    const [sortButton, setSortButton] = useState(false);
+    const [careerFilterButton, setCareerFilterButton] = useState(false); //경력 버튼 open 여부
+    const [techStackFilterButton, setTechStackFilterButton] = useState(false); //기술스택 버튼 open 여부
+    const [sortButton, setSortButton] = useState(false); //정렬 버튼 open 여부
     const [jobGroupButton, setJobGroupButton] = useState(false); //직무 분야 버튼 open 여부
-    const [jobCategoryButton, setJobCategoryButton] = useState(false);
+    const [jobCategoryButton, setJobCategoryButton] = useState(false); //직군 분야 버튼 open 여부
+    const [locationModalOpen, setLocationModalOpen] = useState(false); //지역 선택 modal open 여부
 
     const [jobGroup, setJobGroup] = useState("전체"); //선택된 직무 종류
     const [jobGroupId, setJobGroupId] = useState("");
     const [jobCategory, setJobCategory] = useState([]); //선택된 포지션
     const [jobCategoryId, setJobCategoryId] = useState([]);
     const [locations, setLocations] = useState(["한국.전국"]); //선택된 지역
+    const [years, setYears] = useState([0, 100]); //선택된 경력
 
-    const [locationModalOpen, setLocationModalOpen] = useState(false);
+    const [sliderLeftValue, setSliderLeftValue] = useState(0);
+    const [sliderRightValue, setSliderRightValue] = useState(100);
 
     const [jobCategoryList, setJobCategoryList] = useState([
         { category: "개발 전체", isClicked: true, id: "all" },
@@ -69,17 +72,20 @@ const RecruitmentPage = () => {
             .get(
                 api +
                     `recruits?${
-                        jobGroupId === "all" ? null : `job_group=${jobGroupId}`
+                        jobGroupId === "all" ? "" : `job_group=${jobGroupId}`
                     }&${
                         jobCategoryId[0] === "all"
-                            ? null
+                            ? ""
                             : jobCategoryId
                                   .map((data) => `positions=${data}&`)
                                   .join("")
                     }${
-                        locations[0] !== "한국.전국" &&
-                        locations.map((data) => `locations=${data}&`)
-                    }`
+                        locations[0] === "한국.전국"
+                            ? ""
+                            : locations
+                                  .map((data) => `locations=${data}&`)
+                                  .join("")
+                    }${years.map((data) => `years=${data / 10}&`).join("")}`
             )
             .then((res) => {
                 console.log("res :>> ", res);
@@ -89,7 +95,7 @@ const RecruitmentPage = () => {
             .catch((e) => {
                 console.log("e :>> ", e);
             });
-    }, [jobGroupId, jobCategoryId, locations]);
+    }, [jobGroupId, jobCategoryId, locations, years]);
 
     useEffect(() => {
         setJobGroupButton(false);
@@ -100,6 +106,14 @@ const RecruitmentPage = () => {
         setJobGroup(e.target.innerHTML);
         setJobGroupId(e.target.attributes.value.nodeValue);
         setJobCategory([jobCategoryList[0].category]);
+    };
+
+    const setLeftValue = (e) => {
+        setSliderLeftValue(e.target.value);
+    };
+
+    const setRightValue = (e) => {
+        setSliderRightValue(e.target.value);
     };
 
     return (
@@ -254,27 +268,131 @@ const RecruitmentPage = () => {
                                         {locations.length}
                                     </span>
                                 </FilterButton>
-                                <FilterButton
-                                    onClick={() => {
-                                        setCareerFilterButton(
-                                            !careerFilterButton
-                                        );
+                                <div
+                                    style={{
+                                        position: "relative",
+                                        marginLeft: 10,
                                     }}>
-                                    <span>경력</span>
-                                    <span>전체</span>
-                                    <CareerArrow
-                                        isClicked={careerFilterButton}
-                                        width="8"
-                                        height="7"
-                                        viewBox="0 0 8 7"
-                                        fill="none"
-                                        xmlns="https://www.w3.org/2000/svg"
-                                        style={{ marginLeft: 8 }}>
-                                        <path
-                                            d="M7.33334 0.494202C7.85691 0.494202 8.14842 1.1611 7.82205 1.61224L4.50038 6.20371C4.25071 6.54882 3.77503 6.54971 3.5243 6.20554L0.179295 1.61408C-0.149094 1.16332 0.14211 0.494202 0.666672 0.494202H7.33334Z"
-                                            fill="#333333"></path>
-                                    </CareerArrow>
-                                </FilterButton>
+                                    <FilterButton
+                                        onClick={() => {
+                                            setCareerFilterButton(
+                                                !careerFilterButton
+                                            );
+                                        }}>
+                                        <span>경력</span>
+                                        <span>전체</span>
+                                        <CareerArrow
+                                            isClicked={careerFilterButton}
+                                            width="8"
+                                            height="7"
+                                            viewBox="0 0 8 7"
+                                            fill="none"
+                                            xmlns="https://www.w3.org/2000/svg"
+                                            style={{ marginLeft: 8 }}>
+                                            <path
+                                                d="M7.33334 0.494202C7.85691 0.494202 8.14842 1.1611 7.82205 1.61224L4.50038 6.20371C4.25071 6.54882 3.77503 6.54971 3.5243 6.20554L0.179295 1.61408C-0.149094 1.16332 0.14211 0.494202 0.666672 0.494202H7.33334Z"
+                                                fill="#333333"></path>
+                                        </CareerArrow>
+                                    </FilterButton>
+                                    <CareerFilterSection
+                                        isClicked={careerFilterButton}>
+                                        <header>
+                                            <div>
+                                                <span>전체</span>
+                                            </div>
+                                        </header>
+                                        <div className="body">
+                                            <div>
+                                                <div className="slider">
+                                                    <input
+                                                        type="range"
+                                                        step={10}
+                                                        value={sliderLeftValue}
+                                                        id="range-left"
+                                                        onChange={setLeftValue}
+                                                    />
+                                                    <input
+                                                        type="range"
+                                                        step={10}
+                                                        value={sliderRightValue}
+                                                        id="range-right"
+                                                        onChange={setRightValue}
+                                                    />
+                                                    <div className="slider-rail"></div>
+                                                    <SliderTrack
+                                                        left={sliderLeftValue}
+                                                        right={
+                                                            sliderRightValue
+                                                        }></SliderTrack>
+                                                    <SliderLeftHandle
+                                                        val={sliderLeftValue}>
+                                                        {sliderLeftValue /
+                                                            10 ===
+                                                        10
+                                                            ? "10+"
+                                                            : sliderLeftValue /
+                                                              10}
+                                                    </SliderLeftHandle>
+                                                    <SliderRightHandle
+                                                        val={sliderRightValue}>
+                                                        {sliderRightValue /
+                                                            10 ===
+                                                        10
+                                                            ? "10+"
+                                                            : sliderRightValue /
+                                                              10}
+                                                    </SliderRightHandle>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <hr />
+                                        <footer>
+                                            <div>
+                                                <button
+                                                    className="cancel"
+                                                    onClick={() => {
+                                                        setCareerFilterButton(
+                                                            false
+                                                        );
+                                                        setSliderLeftValue(
+                                                            years[0]
+                                                        );
+                                                        if (
+                                                            years.length === 1
+                                                        ) {
+                                                            setSliderRightValue(
+                                                                years[0]
+                                                            );
+                                                        } else {
+                                                            setSliderRightValue(
+                                                                years[1]
+                                                            );
+                                                        }
+                                                    }}>
+                                                    취소
+                                                </button>
+                                                <button
+                                                    className="apply"
+                                                    onClick={() => {
+                                                        let tmp = [
+                                                            sliderLeftValue,
+                                                            sliderRightValue,
+                                                        ];
+                                                        const set = new Set(
+                                                            tmp
+                                                        );
+                                                        let list = [...set];
+                                                        setYears(list);
+                                                        setCareerFilterButton(
+                                                            false
+                                                        );
+                                                    }}>
+                                                    적용하기
+                                                </button>
+                                            </div>
+                                        </footer>
+                                    </CareerFilterSection>
+                                </div>
                                 <FilterButton
                                     onClick={() => {
                                         setTechStackFilterButton(
@@ -693,4 +811,123 @@ const JobCategoryItem = styled.button`
         border: 1px solid #36f;
     }
 `;
+const CareerFilterSection = styled.section`
+    display: ${(props) => (props.isClicked ? "block" : "none")};
+    position: absolute;
+    width: 468px;
+    height: 174px;
+    overflow: hidden;
+    background-color: #fff;
+    z-index: 99;
+    border: 1px solid #e1e2e3;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    border-radius: 5px;
+    left: -1px;
+    top: 45px;
+
+    & > header {
+        display: flex;
+        color: #333;
+        font-size: 16px;
+        font-weight: 400;
+        line-height: 19px;
+        padding: 30px 15px 20px;
+    }
+
+    .body {
+        padding: 5px 27px 42px;
+
+        .slider {
+            box-sizing: border-box;
+            position: relative;
+            right: 12.5px;
+            width: 100%;
+            height: 7px;
+            border-radius: 6px;
+            background-color: wheat;
+
+            .slider-rail {
+                width: 100%;
+                height: 7px;
+                background-color: rgb(238, 240, 242);
+                border-radius: 6px;
+                position: absolute;
+                top: 0;
+            }
+
+            input[type="range"] {
+                opacity: 0;
+                width: calc(100% + 25px);
+                position: absolute;
+                top: 50%;
+                transform: translateY(-50%);
+                z-index: 2;
+                pointer-events: none;
+            }
+            input[type="range"]::-webkit-slider-thumb {
+                pointer-events: all;
+                cursor: pointer;
+            }
+        }
+    }
+
+    & hr {
+        height: 1px;
+        background-color: #ececec;
+        border: none;
+        margin: 0;
+    }
+
+    & footer {
+        padding: 10px;
+
+        & button {
+            border: none;
+            background: none;
+            height: 30px;
+            font-size: 14px;
+            padding: 6px 8px;
+            cursor: pointer;
+        }
+
+        .cancel {
+            color: #767676;
+            font-weight: 600;
+            padding-right: 10px;
+        }
+        .apply {
+            color: #36f;
+            font-weight: 700;
+        }
+    }
+`;
+const SliderTrack = styled.div`
+    height: 7px;
+    background-color: #36f;
+    position: absolute;
+    top: 0;
+    left: ${(props) => Math.min(props.left, props.right)}%;
+    right: calc(100% - ${(props) => Math.max(props.left, props.right)}%);
+    border-radius: 6px;
+    box-sizing: border-box;
+`;
+const SliderLeftHandle = styled.div`
+    left: ${(props) => props.val}%;
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    border: 1px solid #36f;
+    background-color: #fff;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #36f;
+    font-size: 11px;
+    font-weight: 700;
+    line-height: 14px;
+`;
+const SliderRightHandle = styled(SliderLeftHandle)``;
 export default RecruitmentPage;
