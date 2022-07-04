@@ -54,3 +54,7 @@
 * 개발 도중 발생한 이슈
   * Header에서 navbar 라우팅 시 Link를 사용하면 state가 바로 적용이 안 되고 클릭을 한 번 더 해야 적용이 되는 이슈가 발생했다.
   * useRef를 사용하여 classList를 add 및 remove하는 방식도 사용해봤지만 log를 찍어보니 라우팅 후에 ref.current가 null로 찍혀서 결국 해결하지 못 했다.
+---
+## 2022-07-04 진행상황
+- 채용공고 페이지 경력 section UI 및 filter 구현
+- 이력서 리스트 페이지에서 이력서 조회 api 테스트 연동
