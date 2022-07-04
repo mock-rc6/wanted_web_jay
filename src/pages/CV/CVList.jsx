@@ -1,14 +1,33 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import Header from "../../components/common/Header";
 import { IoMdInformationCircleOutline } from "react-icons/io";
 import { TbCopy } from "react-icons/tb";
 import { BiUpload } from "react-icons/bi";
 import ResumeItem from "../../components/CV/ResumeItem";
+import axios from "axios";
+import { api } from "../../lib/api/api";
+import { getCookie } from "../../lib/cookies/cookie";
 
 const mock = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 const CVList = () => {
+    const navigate = useNavigate();
+    const accessToken = getCookie("accessToken");
+
+    useEffect(() => {
+        axios
+            .get(api + "resumes", {
+                headers: { "x-access-token": accessToken },
+            })
+            .then((res) => {
+                console.log("res :>> ", res);
+            })
+            .catch((e) => {
+                console.log("e :>> ", e);
+            });
+    }, []);
+
     return (
         <Wrap>
             <Header />
@@ -27,7 +46,11 @@ const CVList = () => {
                     </Link>
                 </div>
                 <div className="resume-list-list">
-                    <ResumeAdd className="resume-item">
+                    <ResumeAdd
+                        className="resume-item"
+                        onClick={() => {
+                            navigate("/cv/create");
+                        }}>
                         <div>
                             <TbCopy
                                 style={{
