@@ -40,6 +40,11 @@ const Header = () => {
         dispatch(logoutAction());
     };
 
+    const linkStyle = {
+        textDecoration: "none",
+        color: "black",
+    };
+
     return (
         <Wrap>
             <div>
@@ -56,7 +61,10 @@ const Header = () => {
                     </div>
                     <ul className="menu">
                         {category.map((data, idx) => (
-                            <Link to={"/" + data.url} key={idx}>
+                            <Link
+                                to={"/" + data.url}
+                                key={idx}
+                                style={linkStyle}>
                                 <Category
                                     isClicked={data.isClicked}
                                     onClick={(e) => {
