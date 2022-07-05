@@ -27,12 +27,12 @@ const tags = [
 ];
 
 const jobGroupList = [
-    { id: "all", title: "전체" },
-    { id: "development", title: "개발" },
-    { id: "management", title: "경영·비즈니스" },
-    { id: "marketing", title: "마케팅·광고" },
-    { id: "design", title: "디자인" },
-    { id: "sales", title: "영업" },
+    "전체",
+    "개발",
+    "경영·비즈니스",
+    "마케팅·광고",
+    "디자인",
+    "영업",
 ];
 
 const RecruitmentPage = () => {
@@ -45,9 +45,7 @@ const RecruitmentPage = () => {
     const [locationModalOpen, setLocationModalOpen] = useState(false); //지역 선택 modal open 여부
 
     const [jobGroup, setJobGroup] = useState("전체"); //선택된 직무 종류
-    const [jobGroupId, setJobGroupId] = useState("");
     const [jobCategory, setJobCategory] = useState([]); //선택된 포지션
-    const [jobCategoryId, setJobCategoryId] = useState([]);
     const [locations, setLocations] = useState(["한국.전국"]); //선택된 지역
     const [years, setYears] = useState([0, 100]); //선택된 경력
 
@@ -55,10 +53,10 @@ const RecruitmentPage = () => {
     const [sliderRightValue, setSliderRightValue] = useState(100);
 
     const [jobCategoryList, setJobCategoryList] = useState([
-        { category: "개발 전체", isClicked: true, id: "all" },
+        { category: "개발 전체", isClicked: true },
         { category: "웹 개발자", isClicked: false },
-        { category: "서버 개발자", isClicked: false, id: "backend" },
-        { category: "프론트엔드 개발자", isClicked: false, id: "frontend" },
+        { category: "서버 개발자", isClicked: false },
+        { category: "프론트엔드 개발자", isClicked: false },
         { category: "소프트웨어 엔지니어", isClicked: false },
         { category: "자바 개발자", isClicked: false },
         { category: "안드로이드 개발자", isClicked: false },
@@ -72,11 +70,11 @@ const RecruitmentPage = () => {
             .get(
                 api +
                     `recruits?${
-                        jobGroupId === "all" ? "" : `job_group=${jobGroupId}`
+                        jobGroup === "전체" ? "" : `job_group=${jobGroup}`
                     }&${
-                        jobCategoryId[0] === "all"
+                        jobCategory[0]?.includes("전체")
                             ? ""
-                            : jobCategoryId
+                            : jobCategory
                                   .map((data) => `positions=${data}&`)
                                   .join("")
                     }${
@@ -95,7 +93,7 @@ const RecruitmentPage = () => {
             .catch((e) => {
                 console.log("e :>> ", e);
             });
-    }, [jobGroupId, jobCategoryId, locations, years]);
+    }, [jobGroup, jobCategory, locations, years]);
 
     useEffect(() => {
         setJobGroupButton(false);
@@ -104,7 +102,6 @@ const RecruitmentPage = () => {
     const handleJobGroup = (e) => {
         //선택하면 옆에 직군 선택 가능하게 변경
         setJobGroup(e.target.innerHTML);
-        setJobGroupId(e.target.attributes.value.nodeValue);
         setJobCategory([jobCategoryList[0].category]);
     };
 
@@ -149,9 +146,9 @@ const RecruitmentPage = () => {
                                 {jobGroupList.map((data, idx) => (
                                     <li
                                         key={idx}
-                                        value={data.id}
+                                        value={data}
                                         onClick={handleJobGroup}>
-                                        {data.title}
+                                        {data}
                                     </li>
                                 ))}
                             </ul>
@@ -228,17 +225,14 @@ const RecruitmentPage = () => {
                                 onClick={() => {
                                     setJobCategoryButton(false);
                                     let category = [];
-                                    let id = [];
 
                                     jobCategoryList.forEach((data) => {
                                         if (data.isClicked) {
                                             category.push(data.category);
-                                            id.push(data.id);
                                         }
                                     });
 
                                     setJobCategory(category);
-                                    setJobCategoryId(id); //카테고리 str말고 배열로 받아야함
                                 }}>
                                 선택 완료하기
                             </button>
@@ -725,6 +719,10 @@ const JobGroupSelectSection = styled.section`
     padding: 15px 0;
     box-sizing: border-box;
 
+    & ul {
+        margin: 0;
+        padding: 0;
+    }
     & li {
         list-style: none;
         font-size: 16px;
