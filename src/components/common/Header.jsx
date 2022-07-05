@@ -306,6 +306,8 @@ const Wrap = styled.div`
                 overflow: hidden;
 
                 & > ul {
+                    padding: 0;
+                    margin: 0;
                     padding-top: 14px;
                 }
 
