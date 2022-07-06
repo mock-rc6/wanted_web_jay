@@ -5,7 +5,7 @@ import Header from "../../components/common/Header";
 import { IoMdInformationCircleOutline } from "react-icons/io";
 import { TbCopy } from "react-icons/tb";
 import { BiUpload } from "react-icons/bi";
-import ResumeItem from "../../components/CV/ResumeItem";
+import ResumeItem from "../../components/CVList/ResumeItem";
 import axios from "axios";
 import { api } from "../../lib/api/api";
 import { getCookie } from "../../lib/cookies/cookie";

@@ -4,10 +4,45 @@ import { GrLanguage } from "react-icons/gr";
 import { GoTriangleDown } from "react-icons/go";
 import { RiDownloadFill } from "react-icons/ri";
 import Header from "../../components/common/Header";
+import CareerItem from "../../components/CVCreate/CareerItem";
+import EducationItem from "../../components/CVCreate/EducationItem";
+import AwardItem from "../../components/CVCreate/AwardItem";
+import LanguageItem from "../../components/CVCreate/LanguageItem";
 
+const recommendSkill = [
+    "Python",
+    "Spring Framework",
+    "AWS",
+    "Git",
+    "iOS",
+    "HTML",
+    "JavaScript",
+    "MySQL",
+    "SQL",
+    "Linux",
+    "Android",
+    "Kotlin",
+    "Swift",
+    "C / C++",
+    "PHP",
+    "Docker",
+    "React",
+    "Github",
+    "JPA",
+    "C++",
+];
 const CVCreate = () => {
     const [isChecked, setIsChecked] = useState(false);
     const [careerList, setCareerList] = useState([]);
+    const [educationList, setEducationList] = useState([]);
+    const [openSkillTab, setOpenSkillTab] = useState(false);
+    const [openRecommendSkill, setOpenRecommendSkill] = useState(false);
+    const [skillList, setSkillList] = useState([]);
+    const [skillInput, setSkillInput] = useState(""); //인풋창으로 스킬 추가
+    const [awardList, setAwardList] = useState([]);
+    const [langList, setLangList] = useState([]);
+    const [link, setLink] = useState("");
+    const [openLink, setOpenLink] = useState(false);
 
     const career = {
         start_date: "",
@@ -16,16 +51,76 @@ const CVCreate = () => {
         is_in_service: false,
         company_name: "",
         department_position: "",
-        result: [],
+        results: [],
+    };
+
+    const education = {
+        start_date: "",
+        end_date: "",
+        is_in_service: false,
+        school_name: "",
+        major_degree: "",
+        detail: "",
+    };
+
+    const award = {
+        date: "",
+        title: "",
+        detail: "",
+    };
+
+    const lang = {
+        title: "",
+        level: "",
+        language_certificates: [],
     };
 
     const addCareer = () => {
         let list = [...careerList, career];
         setCareerList(list);
     };
-    const deleteCareer = (idx) => {
-        let list = [...careerList];
-        setCareerList(list.filter((d, i) => idx !== i));
+
+    const addEducation = () => {
+        let list = [...educationList, education];
+        setEducationList(list);
+    };
+
+    const addSkill = (data) => {
+        let check = false;
+        let list = [...skillList];
+        //스킬 중복 방지
+        list.forEach((d) => {
+            if (d === data) {
+                check = true;
+                return;
+            }
+        });
+
+        if (!check) list.push(data);
+        setSkillList(list);
+    };
+
+    const addAward = () => {
+        let list = [...awardList, award];
+        setAwardList(list);
+    };
+
+    const addLang = () => {
+        let list = [...langList, lang];
+        setLangList(list);
+    };
+
+    const handleLink = (e) => {
+        setLink(e.target.value);
+    };
+
+    const handleSkillInput = (e) => {
+        setSkillInput(e.target.value);
+    };
+
+    const deleteSkillTag = (idx) => {
+        let list = [...skillList];
+        setSkillList(list.filter((d, i) => idx !== i));
     };
 
     return (
@@ -126,129 +221,12 @@ const CVCreate = () => {
                                 </button>
                                 <ul>
                                     {careerList.map((data, idx) => (
-                                        <ListItem key={idx}>
-                                            <div className="career">
-                                                <div>
-                                                    <div className="period">
-                                                        <input
-                                                            className="start-year"
-                                                            placeholder="YYYY"
-                                                        />
-                                                        <span>.</span>
-                                                        <input
-                                                            className="start-month"
-                                                            placeholder="MM"
-                                                        />
-                                                        <span>
-                                                            &nbsp;-&nbsp;
-                                                        </span>
-                                                        <input
-                                                            className="end-year"
-                                                            placeholder="YYYY"
-                                                        />
-                                                        <span>.</span>
-                                                        <input
-                                                            className="end-month"
-                                                            placeholder="MM"
-                                                        />
-                                                    </div>
-                                                    <div className="period-checkbox">
-                                                        <input type="checkbox" />
-                                                        <label>
-                                                            현재 재직중
-                                                        </label>
-                                                    </div>
-                                                </div>
-                                                <div>
-                                                    <div className="search">
-                                                        <button className="search-modal-btn">
-                                                            회사명
-                                                        </button>
-                                                    </div>
-                                                    <div>
-                                                        <input
-                                                            className="position"
-                                                            placeholder="부서명/직책"
-                                                        />
-                                                    </div>
-                                                    <div className="projects">
-                                                        <button className="add-btn">
-                                                            + 주요 성과 추가
-                                                        </button>
-                                                        <ul>
-                                                            <li className="project-list">
-                                                                <textarea
-                                                                    placeholder="주요 성과"
-                                                                    maxLength={
-                                                                        255
-                                                                    }
-                                                                />
-                                                                <div className="period">
-                                                                    <input
-                                                                        className="start-year"
-                                                                        placeholder="YYYY"
-                                                                    />
-                                                                    <span>
-                                                                        .
-                                                                    </span>
-                                                                    <input
-                                                                        className="start-month"
-                                                                        placeholder="MM"
-                                                                    />
-                                                                    <span>
-                                                                        &nbsp;-&nbsp;
-                                                                    </span>
-                                                                    <input
-                                                                        className="end-year"
-                                                                        placeholder="YYYY"
-                                                                    />
-                                                                    <span>
-                                                                        .
-                                                                    </span>
-                                                                    <input
-                                                                        className="end-month"
-                                                                        placeholder="MM"
-                                                                    />
-                                                                </div>
-                                                                <textarea
-                                                                    placeholder="상세 업무 내용과 성과를 기입해주세요"
-                                                                    maxLength={
-                                                                        255
-                                                                    }
-                                                                />
-                                                                <button className="delete-btn">
-                                                                    <svg
-                                                                        width="18"
-                                                                        height="18"
-                                                                        viewBox="0 0 24 24"
-                                                                        color="#999">
-                                                                        <path
-                                                                            fill="currentColor"
-                                                                            d="M17.97 19.03a.75.75 0 001.06-1.06l-6.5-6.5a.75.75 0 00-1.06 0l-6.5 6.5a.75.75 0 001.06 1.06L12 13.06l5.97 5.97zM12 10.94L6.03 4.97a.75.75 0 00-1.06 1.06l6.5 6.5a.75.75 0 001.06 0l6.5-6.5a.75.75 0 00-1.06-1.06L12 10.94z"></path>
-                                                                    </svg>
-                                                                </button>
-                                                            </li>
-                                                        </ul>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <button
-                                                className="delete-btn"
-                                                onClick={() => {
-                                                    deleteCareer(idx);
-                                                }}>
-                                                {idx}
-                                                <svg
-                                                    width="18"
-                                                    height="18"
-                                                    viewBox="0 0 24 24"
-                                                    color="#999">
-                                                    <path
-                                                        fill="currentColor"
-                                                        d="M17.97 19.03a.75.75 0 001.06-1.06l-6.5-6.5a.75.75 0 00-1.06 0l-6.5 6.5a.75.75 0 001.06 1.06L12 13.06l5.97 5.97zM12 10.94L6.03 4.97a.75.75 0 00-1.06 1.06l6.5 6.5a.75.75 0 001.06 0l6.5-6.5a.75.75 0 00-1.06-1.06L12 10.94z"></path>
-                                                </svg>
-                                            </button>
-                                        </ListItem>
+                                        <CareerItem
+                                            key={idx}
+                                            careerList={careerList}
+                                            setCareerList={setCareerList}
+                                            idx={idx}
+                                        />
                                     ))}
                                 </ul>
                             </div>
@@ -261,8 +239,21 @@ const CVCreate = () => {
                                 • 최신순으로 작성해주세요.
                             </p>
                             <div className="resume-content-list-body">
-                                <button className="add-btn">+ 추가</button>
-                                <ul></ul>
+                                <button
+                                    className="add-btn"
+                                    onClick={addEducation}>
+                                    + 추가
+                                </button>
+                                <ul>
+                                    {educationList.map((data, idx) => (
+                                        <EducationItem
+                                            key={idx}
+                                            educationList={educationList}
+                                            setEducationList={setEducationList}
+                                            idx={idx}
+                                        />
+                                    ))}
+                                </ul>
                             </div>
                         </ResumeContentList>
                         <ResumeContentList>
@@ -276,7 +267,117 @@ const CVCreate = () => {
                                 있으신 툴들도 추가해보세요.
                             </p>
                             <div className="resume-content-list-body">
-                                <button className="add-btn">+ 추가</button>
+                                <button
+                                    className="add-btn"
+                                    onClick={() => {
+                                        setOpenSkillTab(true);
+                                    }}>
+                                    + 추가
+                                </button>
+                                {openSkillTab && (
+                                    <div className="skill-input-wrap">
+                                        <div className="skill-recommend-wrap">
+                                            <div className="skill-recommend-wrap-header">
+                                                <span>
+                                                    많이 쓰는 인기 스킬을
+                                                    추가해보세요!
+                                                </span>
+                                                <button
+                                                    onClick={() => {
+                                                        setOpenRecommendSkill(
+                                                            !openRecommendSkill
+                                                        );
+                                                    }}>
+                                                    더보기
+                                                </button>
+                                            </div>
+                                            <p
+                                                className={
+                                                    openRecommendSkill
+                                                        ? "skill-recommend-big"
+                                                        : "skill-recommend-small"
+                                                }>
+                                                {recommendSkill.map(
+                                                    (data, idx) => (
+                                                        <SkillChooseButton
+                                                            key={idx}
+                                                            onClick={() => {
+                                                                addSkill(data);
+                                                            }}>
+                                                            <span>{data}</span>
+                                                            <svg
+                                                                xmlns="http://www.w3.org/2000/svg"
+                                                                width="16"
+                                                                height="16"
+                                                                viewBox="0 0 16 16">
+                                                                <g
+                                                                    fill="none"
+                                                                    fillRule="evenodd">
+                                                                    <g fill="#939393">
+                                                                        <g>
+                                                                            <path
+                                                                                d="M3.151 3.151c.202-.201.53-.201.732 0L8 7.27l4.117-4.118c.202-.201.53-.201.732 0 .201.202.201.53 0 .732L8.73 8l4.118 4.117c.18.18.199.458.06.66l-.06.072c-.202.201-.53.201-.732 0L8 8.73 3.883 12.85c-.202.201-.53.201-.732 0-.201-.202-.201-.53 0-.732L7.27 8 3.151 3.883c-.18-.18-.199-.458-.06-.66z"
+                                                                                transform="translate(-156 -497) translate(156 497) rotate(-45 8 8)"></path>
+                                                                        </g>
+                                                                    </g>
+                                                                </g>
+                                                            </svg>
+                                                        </SkillChooseButton>
+                                                    )
+                                                )}
+                                            </p>
+                                        </div>
+                                        <input
+                                            placeholder="보유 스킬을 검색해주세요."
+                                            onChange={handleSkillInput}
+                                        />
+                                        <span
+                                            onClick={() => {
+                                                addSkill(skillInput);
+                                            }}>
+                                            <svg
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                width="18"
+                                                height="18"
+                                                viewBox="0 0 18 18">
+                                                <g
+                                                    fill="none"
+                                                    fillRule="evenodd">
+                                                    <g fill="#939393">
+                                                        <g>
+                                                            <g>
+                                                                <path
+                                                                    d="M16.433 17.317c.244.244.64.244.884 0s.244-.64 0-.884L11.9 11.016l-.211-.184c-.248-.212-.617-.198-.848.032C9.794 11.905 8.382 12.5 6.875 12.5c-3.106 0-5.625-2.519-5.625-5.625 0-3.107 2.518-5.625 5.625-5.625S12.5 3.768 12.5 6.875c0 .58-.088 1.148-.259 1.691-.103.33.08.68.409.784.33.104.68-.08.784-.409.208-.663.316-1.359.316-2.066C13.75 3.078 10.672 0 6.875 0S0 3.078 0 6.875c0 3.796 3.078 6.875 6.875 6.875 1.634 0 3.18-.574 4.4-1.593l5.158 5.16z"
+                                                                    transform="translate(-1215 -454) translate(193 438) translate(1022.042 16.042)"></path>
+                                                            </g>
+                                                        </g>
+                                                    </g>
+                                                </g>
+                                            </svg>
+                                        </span>
+                                        <p className="skill-tag-wrap">
+                                            {skillList.map((data, idx) => (
+                                                <SkillTag key={idx}>
+                                                    {data}
+                                                    <button
+                                                        onClick={() => {
+                                                            deleteSkillTag(idx);
+                                                        }}>
+                                                        <svg
+                                                            width="16.59751037344398"
+                                                            height="16.59751037344398"
+                                                            viewBox="0 0 24 24"
+                                                            color="#939393">
+                                                            <path
+                                                                fill="currentColor"
+                                                                d="M17.97 19.03a.75.75 0 001.06-1.06l-6.5-6.5a.75.75 0 00-1.06 0l-6.5 6.5a.75.75 0 001.06 1.06L12 13.06l5.97 5.97zM12 10.94L6.03 4.97a.75.75 0 00-1.06 1.06l6.5 6.5a.75.75 0 001.06 0l6.5-6.5a.75.75 0 00-1.06-1.06L12 10.94z"></path>
+                                                        </svg>
+                                                    </button>
+                                                </SkillTag>
+                                            ))}
+                                        </p>
+                                    </div>
+                                )}
                             </div>
                         </ResumeContentList>
                         <ResumeContentList>
@@ -291,8 +392,18 @@ const CVCreate = () => {
                                 것이 좋습니다!
                             </p>
                             <div className="resume-content-list-body">
-                                <button className="add-btn">+ 추가</button>
-                                <ul></ul>
+                                <button className="add-btn" onClick={addAward}>
+                                    + 추가
+                                </button>
+                                <ul>
+                                    {awardList.map((data, idx) => (
+                                        <AwardItem
+                                            awardList={awardList}
+                                            setAwardList={setAwardList}
+                                            idx={idx}
+                                        />
+                                    ))}
+                                </ul>
                             </div>
                         </ResumeContentList>
                         <ResumeContentList>
@@ -305,11 +416,22 @@ const CVCreate = () => {
                                 수준인지 레벨을 선택해주세요.
                             </p>
                             <div className="resume-content-list-body">
-                                <button className="add-btn">+ 추가</button>
-                                <ul></ul>
+                                <button className="add-btn" onClick={addLang}>
+                                    + 추가
+                                </button>
+                                <ul>
+                                    {langList.map((data, idx) => (
+                                        <LanguageItem
+                                            key={idx}
+                                            langList={langList}
+                                            setLangList={setLangList}
+                                            idx={idx}
+                                        />
+                                    ))}
+                                </ul>
                             </div>
                         </ResumeContentList>
-                        <ResumeContentList>
+                        <ResumeContentList style={{ marginBottom: 100 }}>
                             <div className="resume-content-list-header">
                                 링크
                             </div>
@@ -319,8 +441,20 @@ const CVCreate = () => {
                                 링크가 있다면 작성해주세요.
                             </p>
                             <div className="resume-content-list-body">
-                                <button className="add-btn">+ 추가</button>
-                                <ul></ul>
+                                <button
+                                    className="add-btn"
+                                    onClick={() => {
+                                        setOpenLink(true);
+                                    }}>
+                                    + 추가
+                                </button>
+                                {openLink && (
+                                    <input
+                                        className="link-input"
+                                        placeholder="http://"
+                                        onChange={handleLink}
+                                    />
+                                )}
                             </div>
                         </ResumeContentList>
                     </div>
@@ -577,132 +711,116 @@ const ResumeContentList = styled.div`
         text-align: left;
         cursor: pointer;
     }
-`;
-const ListItem = styled.li`
-    list-style: none;
-    padding: 30px;
-    position: relative;
-    border-top: 1px solid #f1f1f1;
 
-    .delete-btn {
+    .skill-input-wrap {
+        margin-bottom: 90px;
+        position: relative;
+        font-weight: 500;
+        color: #333;
+
+        & > input {
+            margin-top: 30px;
+            width: 100%;
+            border-radius: 5px;
+            border: 1px solid #e1e2e3;
+            padding: 11px 20px 11px 15px;
+            font-size: 15px;
+            box-sizing: border-box;
+        }
+
+        & > span {
+            position: absolute;
+            margin-top: 45px;
+            right: 20px;
+
+            &::before {
+                content: "";
+                width: 1px;
+                background-color: #ececec;
+                height: 28px;
+                display: block;
+                position: absolute;
+                left: -21px;
+                bottom: 3px;
+            }
+        }
+
+        .skill-recommend-wrap {
+            display: flex;
+            flex-direction: column;
+            background-color: #f5fcf8;
+            padding: 18px 21px 18px 17px;
+
+            .skill-recommend-wrap-header {
+                display: flex;
+                justify-content: space-between;
+
+                & span {
+                    font-size: 13px;
+                    color: #333;
+                    line-height: 27px;
+                    margin-bottom: 2px;
+                    letter-spacing: 0;
+                }
+                & button {
+                    background: none;
+                    border: none;
+                    cursor: pointer;
+                    color: #666;
+                }
+            }
+
+            .skill-recommend-small {
+                height: 50px;
+                overflow-y: hidden;
+            }
+            .skill-recommend-big {
+                height: auto;
+                overflow-y: auto;
+            }
+        }
+
+        .skill-tag-wrap {
+            margin-top: 6px;
+        }
+    }
+    .link-input {
+        padding: 30px;
+        width: 100%;
+        border: none;
+        font-size: 14px;
+        color: #333333;
+        &:focus {
+            outline: none;
+        }
+    }
+`;
+const SkillChooseButton = styled.button`
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #e4f4ec;
+    border-radius: 19px;
+    margin-right: 10px;
+    height: 38px;
+    padding: 0 17px;
+    margin-top: 10px;
+    border: none;
+    cursor: pointer;
+
+    & > span {
+        margin-right: 9px;
+    }
+`;
+const SkillTag = styled(SkillChooseButton)`
+    background-color: #f3f5f8;
+    cursor: default;
+    & > button {
         background: none;
         border: none;
-        padding: 15px;
-        position: absolute;
-        top: 0;
-        right: 15px;
+        margin-left: 10px;
+        margin-top: 4px;
         cursor: pointer;
-    }
-
-    .career {
-        display: flex;
-        & > div:first-of-type {
-            flex: 1;
-        }
-        & > div:nth-of-type(2) {
-            flex: 3;
-        }
-        .period {
-            .start-year,
-            .end-year {
-                font-size: 14px;
-                font-weight: 500;
-                width: 36px;
-                border: none;
-                &:focus {
-                    outline: none;
-                }
-            }
-            .start-month,
-            .end-month {
-                font-size: 14px;
-                font-weight: 500;
-                width: 26px;
-                margin-left: 4px;
-                border: none;
-                &:focus {
-                    outline: none;
-                }
-            }
-        }
-        .period-checkbox {
-            margin: 16px 0 30px;
-            display: flex;
-            align-items: center;
-            color: rgba(0, 0, 0, 0.4);
-            font-size: 14px;
-            font-weight: 600;
-            & > input {
-                margin-right: 5px;
-            }
-        }
-
-        .search {
-            display: flex;
-            .search-modal-btn {
-                padding: 0;
-                border: none;
-                background: none;
-                width: fit-content;
-                cursor: pointer;
-                color: #3b3d40;
-                white-space: nowrap;
-                font-size: 20px;
-                font-weight: 600;
-                margin-bottom: 3px;
-                word-wrap: break-word;
-            }
-        }
-        .position {
-            font-size: 16px;
-            border: none;
-            padding: 0;
-            &:focus {
-                outline: none;
-                margin-bottom: 3px;
-                width: 100%;
-            }
-        }
-
-        .projects {
-            .project-list {
-                display: flex;
-                flex-direction: column;
-                position: relative;
-                list-style: none;
-                margin-left: -40px;
-                padding: 15px 20px 15px 60px;
-                font-size: 10px;
-
-                &::before {
-                    content: "●";
-                    position: absolute;
-                    top: 18px;
-                    left: 40px;
-                }
-                & textarea {
-                    border: none;
-                    resize: none;
-                    white-space: pre-wrap;
-                    word-break: break-all;
-                    word-wrap: break-word;
-                    height: 34px;
-                    color: rgb(59, 61, 64);
-                    &:focus {
-                        outline: none;
-                    }
-                }
-                & textarea:nth-of-type(1) {
-                    font-size: 16px;
-                    font-weight: 600;
-                    line-height: 22px;
-                }
-                & textarea:nth-of-type(2) {
-                    font-size: 14px;
-                    line-height: 1.6;
-                }
-            }
-        }
     }
 `;
 export default CVCreate;
