@@ -15,6 +15,8 @@ const CVList = () => {
     const navigate = useNavigate();
     const accessToken = getCookie("accessToken");
 
+    const [resumeList, setResumeList] = useState([]);
+
     useEffect(() => {
         axios
             .get(api + "resumes", {
@@ -22,6 +24,7 @@ const CVList = () => {
             })
             .then((res) => {
                 console.log("res :>> ", res);
+                setResumeList(res.data.result);
             })
             .catch((e) => {
                 console.log("e :>> ", e);
@@ -99,8 +102,16 @@ const CVList = () => {
                         </div>
                         <p>파일 업로드</p>
                     </ResumeUpload>
-                    {mock.map((data, idx) => (
-                        <ResumeItem key={idx} />
+                    {resumeList.map((data, idx) => (
+                        <ResumeItem
+                            onClick={() => {
+                                navigate(`/cv/${data.id}`);
+                            }}
+                            key={idx}
+                            title={data.title}
+                            isFinished={data.is_finished}
+                            updatedAt={data.updated_at}
+                        />
                     ))}
                 </div>
             </div>
