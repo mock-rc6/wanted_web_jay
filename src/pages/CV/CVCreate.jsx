@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { GrLanguage } from "react-icons/gr";
 import { GoTriangleDown } from "react-icons/go";
@@ -9,6 +9,7 @@ import EducationItem from "../../components/CVCreate/EducationItem";
 import AwardItem from "../../components/CVCreate/AwardItem";
 import LanguageItem from "../../components/CVCreate/LanguageItem";
 import footImg from "../../assets/imgs/img-resume-footer.png";
+import { useLocation } from "react-router-dom";
 
 const recommendSkill = [
     "Python",
@@ -33,6 +34,16 @@ const recommendSkill = [
     "C++",
 ];
 const CVCreate = () => {
+    const { state } = useLocation();
+
+    const resumeId = state.id; //이력서 id
+
+    const [title, setTitle] = useState(state.title);
+    const [name, setName] = useState(state.name);
+    const [email, setEmail] = useState(state.email);
+    const [phoneNumber, setPhoneNumber] = useState("");
+    const [introduction, setIntroduction] = useState("");
+
     const [isChecked, setIsChecked] = useState(false);
     const [careerList, setCareerList] = useState([]);
     const [educationList, setEducationList] = useState([]);
@@ -119,6 +130,26 @@ const CVCreate = () => {
         setSkillInput(e.target.value);
     };
 
+    const handleTitle = (e) => {
+        setTitle(e.target.value);
+    };
+
+    const handleName = (e) => {
+        setName(e.target.value);
+    };
+
+    const handleEmail = (e) => {
+        setEmail(e.target.value);
+    };
+
+    const handlePhoneNumber = (e) => {
+        setPhoneNumber(e.target.value);
+    };
+
+    const handleIntroduction = (e) => {
+        setIntroduction(e.target.value);
+    };
+
     const deleteSkillTag = (idx) => {
         let list = [...skillList];
         setSkillList(list.filter((d, i) => idx !== i));
@@ -172,24 +203,31 @@ const CVCreate = () => {
                             type="text"
                             maxLength={100}
                             placeholder="이력서 제목(필수)"
+                            defaultValue={state.title}
+                            onChange={handleTitle}
                         />
                         <input
                             className="name"
                             type="text"
                             maxLength={100}
                             placeholder="이름(필수)"
+                            defaultValue={state.name}
+                            onChange={handleName}
                         />
                         <input
                             className="email"
                             type="email"
                             maxLength={120}
                             placeholder="이메일(필수)"
+                            defaultValue={state.email}
+                            onChange={handleEmail}
                         />
                         <input
                             className="mobile"
                             type="tel"
                             maxLength={200}
                             placeholder="연락처(필수) ex) 010-0000-0000"
+                            onChange={handlePhoneNumber}
                         />
                     </div>
                     <div className="body-about">
@@ -202,7 +240,8 @@ const CVCreate = () => {
                         <textarea
                             className="resume-input"
                             maxLength={4000}
-                            placeholder="간단한 자기소개를 통해 이력서를 돋보이게 만들어보세요. (3~5줄 권장)"></textarea>
+                            placeholder="간단한 자기소개를 통해 이력서를 돋보이게 만들어보세요. (3~5줄 권장)"
+                            onChange={handleIntroduction}></textarea>
                     </div>
                     <div className="resume-lists">
                         <ResumeContentList>

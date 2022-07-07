@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import Header from "../../components/common/Header";
@@ -28,6 +28,34 @@ const CVList = () => {
             });
     }, []);
 
+    const addResume = () => {
+        axios
+            .post(
+                api + "resumes",
+                {},
+                {
+                    headers: { "x-access-token": accessToken },
+                    withCredentials: true,
+                }
+            )
+            .then((res) => {
+                if (res.data.isSuccess) {
+                    console.log("res :>> ", res);
+                    const { id, title, name, email } = res.data.result;
+                    const info = {
+                        id,
+                        title,
+                        name,
+                        email,
+                    };
+                    navigate("/cv/create", { state: info });
+                } else alert(res.data.message);
+            })
+            .catch((e) => {
+                console.log("e :>> ", e);
+            });
+    };
+
     return (
         <Wrap>
             <Header />
@@ -49,7 +77,7 @@ const CVList = () => {
                     <ResumeAdd
                         className="resume-item"
                         onClick={() => {
-                            navigate("/cv/create");
+                            addResume();
                         }}>
                         <div>
                             <TbCopy
