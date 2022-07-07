@@ -2,17 +2,17 @@ import React from "react";
 import styled from "styled-components";
 import { HiDotsVertical } from "react-icons/hi";
 
-const ResumeItem = () => {
+const ResumeItem = ({ title, isFinished, updatedAt, onClick }) => {
     return (
-        <Wrap>
+        <Wrap onClick={onClick}>
             <Title>
-                <h3>이준수 1</h3>
-                <p>2022.06.28</p>
+                <h3>{title}</h3>
+                <p>{updatedAt.substr(0, 10).replace(/-/gi, ".")}</p>
                 <p className="match">매치업 이력서</p>
             </Title>
             <Info>
                 <div className="lang">한</div>
-                <span>작성 중</span>
+                <span>{isFinished ? "작성 완료" : "작성 중"}</span>
                 <div className="dropdown">
                     <button>
                         <HiDotsVertical style={{ width: 24, height: 24 }} />
