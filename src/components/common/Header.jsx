@@ -165,10 +165,20 @@ const Header = () => {
                                                 <li>
                                                     <div>제안받기 현황</div>
                                                 </li>
-                                                <li>
+                                                <li
+                                                    onClick={() => {
+                                                        navigate(
+                                                            "/profile/likes"
+                                                        );
+                                                    }}>
                                                     <div>좋아요</div>
                                                 </li>
-                                                <li>
+                                                <li
+                                                    onClick={() => {
+                                                        navigate(
+                                                            "/profile/bookmarks"
+                                                        );
+                                                    }}>
                                                     <div>북마크</div>
                                                 </li>
                                                 <li>

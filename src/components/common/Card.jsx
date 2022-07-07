@@ -5,7 +5,7 @@ import styled from "styled-components";
 import { api } from "../../lib/api/api";
 import { getCookie } from "../../lib/cookies/cookie";
 
-const Card = ({ id, position, companyName, responseRate }) => {
+const Card = ({ id, position, companyName, responseRate, location }) => {
     const bookmarkRef = useRef();
     const ref = useRef();
     const navigate = useNavigate();
@@ -78,7 +78,7 @@ const Card = ({ id, position, companyName, responseRate }) => {
                 <div className="job-card-position">{position}</div>
                 <div className="job-card-company-name">{companyName}</div>
                 {responseRate > 0.9 ? <button>응답률 매우 높음</button> : null}
-                <div className="job-card-company-location">서울 · 한국</div>
+                <div className="job-card-company-location">{location}</div>
                 <div className="reward">채용보상금 1,000,000원</div>
             </div>
         </Wrap>
