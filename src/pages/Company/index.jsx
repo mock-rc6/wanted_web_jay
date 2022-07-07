@@ -1,20 +1,23 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { RiArrowDropDownLine } from "react-icons/ri";
 import { useNavigate } from "react-router-dom";
 import agree from "../../assets/imgs/img-company-agreement.png";
+import axios from "axios";
+import { api } from "../../lib/api/api";
+import { getCookie } from "../../lib/cookies/cookie";
 
 const locationList = [
-    { id: "seoul", value: "서울" },
-    { id: "busan", value: "부산" },
-    { id: "daegu", value: "대구" },
-    { id: "incheon", value: "인천" },
-    { id: "gwangju", value: "광주" },
-    { id: "daejeon", value: "대전" },
-    { id: "ulsan", value: "울산" },
-    { id: "sejong", value: "세종" },
-    { id: "gyeonggi", value: "경기" },
-    { id: "gangwon", value: "강원" },
+    "서울",
+    "부산",
+    "대구",
+    "인천",
+    "광주",
+    "대전",
+    "울산",
+    "세종",
+    "경기",
+    "강원",
 ];
 
 const workTypeList = [
@@ -41,6 +44,58 @@ const companySize = [
 ];
 const Company = () => {
     const navigate = useNavigate();
+    const accessToken = getCookie("accessToken");
+    const [isChecked, setIsChecked] = useState(false);
+    const [form, setForm] = useState({
+        name: "",
+        location: "서울",
+        address: "",
+        registration_number: "",
+        sales_amount: "",
+        industry: "",
+        employees_number: "",
+        detail: "",
+        establishment_year: "",
+        email: "",
+        contact_number: "",
+        subscription_path: "",
+    });
+
+    useEffect(() => {
+        console.log("form :>> ", form);
+    }, [form]);
+
+    const handleForm = (e) => {
+        const changed = { ...form, [e.target.name]: e.target.value };
+        changed.sales_amount = parseInt(changed.sales_amount);
+        changed.employees_number = parseInt(changed.employees_number);
+        changed.establishment_year = parseInt(changed.establishment_year);
+        setForm(changed);
+    };
+
+    const handleCheck = (e) => {
+        setIsChecked(e.target.checked);
+    };
+
+    const submit = () => {
+        axios
+            .post(api + "businesses", form, {
+                headers: {
+                    "x-access-token": accessToken,
+                },
+                withCredentials: true,
+            })
+            .then((res) => {
+                console.log("res :>> ", res);
+                if (res.data.isSuccess) {
+                    alert("등록이 완료되었습니다.");
+                    navigate("/");
+                } else alert(res.data.message);
+            })
+            .catch((e) => {
+                console.log("e :>> ", e);
+            });
+    };
 
     return (
         <Wrap>
@@ -74,7 +129,11 @@ const Company = () => {
                 </h4>
                 <div className="row-box">
                     <div>회사이름</div>
-                    <input placeholder="삼성전자" />
+                    <input
+                        placeholder="삼성전자"
+                        name="name"
+                        onChange={handleForm}
+                    />
                 </div>
                 <div className="multi-wrap">
                     <div>
@@ -89,10 +148,13 @@ const Company = () => {
                     </div>
                     <div>
                         <div>지역</div>
-                        <select defaultValue="seoul">
+                        <select
+                            defaultValue="seoul"
+                            name="location"
+                            onChange={handleForm}>
                             {locationList.map((data, idx) => (
-                                <option key={idx} value={data.id}>
-                                    {data.value}
+                                <option key={idx} value={data}>
+                                    {data}
                                 </option>
                             ))}
                         </select>
@@ -100,12 +162,20 @@ const Company = () => {
                 </div>
                 <div className="row-box">
                     <div>대표 주소</div>
-                    <input placeholder="대표 주소 입력" />
+                    <input
+                        placeholder="대표 주소 입력"
+                        name="address"
+                        onChange={handleForm}
+                    />
                 </div>
                 <div className="multi-wrap">
                     <div>
                         <div>사업자 등록 번호</div>
-                        <input placeholder="'-'제외 10자리'" />
+                        <input
+                            placeholder="'-'제외 10자리'"
+                            name="registration_number"
+                            onChange={handleForm}
+                        />
                     </div>
                     <div className="money">
                         <div>
@@ -114,13 +184,20 @@ const Company = () => {
                                 (승인기준: 매출액/투자 유치 5억원 이상)
                             </small>
                         </div>
-                        <input placeholder="매출액 / 투자금액 입력 (단위 : 억원)" />
+                        <input
+                            placeholder="매출액 / 투자금액 입력 (단위 : 억원)"
+                            name="sales_amount"
+                            onChange={handleForm}
+                        />
                     </div>
                 </div>
                 <div className="multi-wrap">
                     <div>
                         <div>산업군</div>
-                        <select defaultValue="default">
+                        <select
+                            defaultValue="default"
+                            name="industry"
+                            onChange={handleForm}>
                             <option value="default" disabled>
                                 산업군
                             </option>
@@ -135,36 +212,46 @@ const Company = () => {
                         <div>
                             직원수<small>(승인기준: 팀원 10명 이상)</small>
                         </div>
-                        <select defaultValue="default">
-                            <option value="default" disabled>
-                                회사규모
-                            </option>
-                            {companySize.map((data, idx) => (
-                                <option key={idx} value={data}>
-                                    {data}
-                                </option>
-                            ))}
-                        </select>
+                        <input
+                            placeholder="회사규모"
+                            name="employees_number"
+                            onChange={handleForm}
+                        />
                     </div>
                 </div>
                 <div className="row-box">
                     <div>회사/서비스 소개(3,000자 제한)</div>
-                    <textarea placeholder="회사정보 (텍스트만 입력 가능합니다.)"></textarea>
+                    <textarea
+                        placeholder="회사정보 (텍스트만 입력 가능합니다.)"
+                        name="detail"
+                        onChange={handleForm}></textarea>
                 </div>
                 <div className="multi-wrap">
                     <div>
                         <div>설립연도</div>
-                        <input placeholder="ex) 2012" />
+                        <input
+                            placeholder="ex) 2012"
+                            name="establishment_year"
+                            onChange={handleForm}
+                        />
                     </div>
                     <div className="money">
                         <div>정보 수신 이메일</div>
-                        <input placeholder="ex) example@company.com" />
+                        <input
+                            placeholder="ex) example@company.com"
+                            name="email"
+                            onChange={handleForm}
+                        />
                     </div>
                 </div>
                 <div className="multi-wrap">
                     <div>
                         <div>담당자 연락처</div>
-                        <input placeholder="연락처 입력" />
+                        <input
+                            placeholder="연락처 입력"
+                            name="contact_number"
+                            onChange={handleForm}
+                        />
                     </div>
                     <div className="money">
                         <div>웹사이트 주소</div>
@@ -185,7 +272,11 @@ const Company = () => {
                             (원티드를 추천한 기업과 추천인을 입력 해 주세요.)
                         </small>
                     </div>
-                    <input placeholder="ex) 원티드랩/김OO담당자" />
+                    <input
+                        placeholder="ex) 원티드랩/김OO담당자"
+                        name="subscription_path"
+                        onChange={handleForm}
+                    />
                 </div>
                 <div className="row-box">
                     <div>기업회원 이용약관</div>
@@ -197,12 +288,32 @@ const Company = () => {
             <footer className="company-footer">
                 <div>
                     <div className="footer-left">
-                        <input type="checkbox" id="agree" />
+                        <input
+                            type="checkbox"
+                            id="agree"
+                            onChange={handleCheck}
+                        />
                         <label htmlFor="agree">
                             이용약관 및 원티드 기업회원 가입에 동의합니다.
                         </label>
                     </div>
-                    <SubmitBtn>제출하기</SubmitBtn>
+                    {form.address !== "" &&
+                    form.contact_number !== "" &&
+                    form.detail !== "" &&
+                    form.email !== "" &&
+                    form.employees_number !== "" &&
+                    form.establishment_year !== "" &&
+                    form.industry !== "" &&
+                    form.location !== "" &&
+                    form.name !== "" &&
+                    form.registration_number !== "" &&
+                    form.sales_amount !== "" &&
+                    form.subscription_path !== "" &&
+                    isChecked ? (
+                        <SubmitBtn onClick={submit}>제출하기</SubmitBtn>
+                    ) : (
+                        <DisabledBtn>제출하기</DisabledBtn>
+                    )}
                 </div>
             </footer>
         </Wrap>
@@ -425,5 +536,8 @@ const SubmitBtn = styled.button`
     border: none;
     cursor: pointer;
 `;
-
+const DisabledBtn = styled(SubmitBtn)`
+    background-color: #e1e2e3;
+    cursor: not-allowed;
+`;
 export default Company;
