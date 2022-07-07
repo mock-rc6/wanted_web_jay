@@ -398,6 +398,7 @@ const CVCreate = () => {
                                 <ul>
                                     {awardList.map((data, idx) => (
                                         <AwardItem
+                                            key={idx}
                                             awardList={awardList}
                                             setAwardList={setAwardList}
                                             idx={idx}
