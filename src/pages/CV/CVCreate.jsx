@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { GrLanguage } from "react-icons/gr";
 import { GoTriangleDown } from "react-icons/go";
@@ -9,7 +9,11 @@ import EducationItem from "../../components/CVCreate/EducationItem";
 import AwardItem from "../../components/CVCreate/AwardItem";
 import LanguageItem from "../../components/CVCreate/LanguageItem";
 import footImg from "../../assets/imgs/img-resume-footer.png";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import axios from "axios";
+import { api } from "../../lib/api/api";
+import { getCookie } from "../../lib/cookies/cookie";
+import { autoResizeTextarea } from "../../utils/autoResizeTextarea";
 
 const recommendSkill = [
     "Python",
@@ -35,8 +39,11 @@ const recommendSkill = [
 ];
 const CVCreate = () => {
     const { state } = useLocation();
+    const navigate = useNavigate();
+    const ref = useRef();
 
     const resumeId = state.id; //이력서 id
+    const accessToken = getCookie("accessToken");
 
     const [title, setTitle] = useState(state.title);
     const [name, setName] = useState(state.name);
@@ -57,6 +64,7 @@ const CVCreate = () => {
     const [openLink, setOpenLink] = useState(false);
 
     const career = {
+        id: 0,
         start_date: "",
         end_date: "",
         tenure: "",
@@ -67,6 +75,7 @@ const CVCreate = () => {
     };
 
     const education = {
+        id: 0,
         start_date: "",
         end_date: "",
         is_in_service: false,
@@ -76,12 +85,14 @@ const CVCreate = () => {
     };
 
     const award = {
+        id: 0,
         date: "",
         title: "",
         detail: "",
     };
 
     const lang = {
+        id: 0,
         title: "",
         level: "",
         language_certificates: [],
@@ -153,6 +164,43 @@ const CVCreate = () => {
     const deleteSkillTag = (idx) => {
         let list = [...skillList];
         setSkillList(list.filter((d, i) => idx !== i));
+    };
+
+    const editResume = () => {
+        axios
+            .patch(
+                api + `resumes/${resumeId}?permanent=true`,
+                {
+                    id: resumeId,
+                    title,
+                    name,
+                    email,
+                    phone_number: phoneNumber,
+                    introduction,
+                    external_link: link,
+                    careers: careerList,
+                    awards: awardList,
+                    educations: educationList,
+                    language_skills: langList,
+                    skills: skillList,
+                },
+                {
+                    headers: {
+                        "X-Access-Token": accessToken,
+                    },
+                    withCredentials: true,
+                }
+            )
+            .then((res) => {
+                console.log("res :>> ", res);
+                if (res.data.isSuccess) {
+                    alert("이력서가 등록되었습니다.");
+                    navigate("/cv/list");
+                } else alert(res.data.message);
+            })
+            .catch((e) => {
+                console.log("e :>> ", e);
+            });
     };
 
     return (
@@ -238,10 +286,17 @@ const CVCreate = () => {
                             작성하는 것을 추천합니다!
                         </p>
                         <textarea
+                            ref={ref}
                             className="resume-input"
                             maxLength={4000}
                             placeholder="간단한 자기소개를 통해 이력서를 돋보이게 만들어보세요. (3~5줄 권장)"
-                            onChange={handleIntroduction}></textarea>
+                            onChange={handleIntroduction}
+                            onKeyDown={() => {
+                                autoResizeTextarea(ref);
+                            }}
+                            onKeyUp={() => {
+                                autoResizeTextarea(ref);
+                            }}></textarea>
                     </div>
                     <div className="resume-lists">
                         <ResumeContentList>
@@ -514,7 +569,7 @@ const CVCreate = () => {
                     </div>
                     <div className="btn-wrap">
                         <Button>임시 저장</Button>
-                        <SubmitBtn>작성 완료</SubmitBtn>
+                        <SubmitBtn onClick={editResume}>작성 완료</SubmitBtn>
                     </div>
                 </div>
             </FooterBar>

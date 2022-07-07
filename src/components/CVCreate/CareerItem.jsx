@@ -17,6 +17,7 @@ const CareerItem = ({ careerList, setCareerList, idx }) => {
 
     const addProject = () => {
         const project = {
+            id: 0,
             title: "",
             start_date: "",
             end_date: "",

@@ -19,7 +19,7 @@ const langItem = [
     "말레이시아어",
     "베트남어",
 ];
-const levelItem = ["유창함", "비즈니스회화", "일상회화"];
+const levelItem = ["FLUENT", "BUSINESS", "DAILY"];
 const LanguageItem = ({ langList, setLangList, idx }) => {
     const [lang, setLang] = useState("언어");
     const [level, setLevel] = useState("수준");
@@ -49,6 +49,7 @@ const LanguageItem = ({ langList, setLangList, idx }) => {
 
     const addTest = () => {
         const test = {
+            id: 0,
             title: "",
             score: "",
             date: "",
