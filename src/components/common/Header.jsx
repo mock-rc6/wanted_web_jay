@@ -56,7 +56,7 @@ const Header = () => {
                             src={hamburger}
                             alt="hamburger-img"
                         />
-                        <Link to="/recruit">
+                        <Link to="/">
                             <img className="logo-img" src={logo} alt="logo" />
                         </Link>
                     </div>
