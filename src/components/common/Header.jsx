@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import hamburger from "../../assets/imgs/img-hamburger.png";
 import logo from "../../assets/imgs/img-logo.png";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Signup from "../Signup";
 import SignupDetail from "../Signup/SignupDetail";
 import { useSelector, useDispatch } from "react-redux";
@@ -11,6 +11,7 @@ import { logoutAction } from "../../store/actions/login";
 
 const Header = () => {
     const dispatch = useDispatch();
+    const navigate = useNavigate();
 
     const isLogined = useSelector((state) => state.loginReducer.isLogin);
 
@@ -194,7 +195,11 @@ const Header = () => {
                             </button>
                         )}
                         <span>|</span>
-                        <button className="btn-company-service">
+                        <button
+                            className="btn-company-service"
+                            onClick={() => {
+                                navigate("/company");
+                            }}>
                             기업 서비스
                         </button>
                     </aside>
