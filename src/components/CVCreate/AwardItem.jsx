@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import { autoResizeTextarea } from "../../utils/autoResizeTextarea";
 import styled from "styled-components";
 
@@ -9,14 +9,42 @@ const AwardItem = ({ awardList, setAwardList, idx }) => {
         let list = [...awardList];
         setAwardList(list.filter((d, i) => idx !== i));
     };
+
+    const handleInput = (e) => {
+        const changed = {
+            ...awardList[idx],
+            [e.target.name]: e.target.value,
+        };
+        let list = [...awardList];
+        list[idx] = changed;
+        setAwardList(list);
+    };
+
+    const handleDate = (e) => {
+        const changed = {
+            ...awardList[idx],
+            [e.target.name]: e.target.valueAsDate,
+        };
+        let list = [...awardList];
+        list[idx] = changed;
+        setAwardList(list);
+    };
+
+    useEffect(() => {
+        console.log("awardList :>> ", awardList);
+    }, [awardList]);
+
     return (
         <ListItem>
             <div className="career">
                 <div>
                     <div className="period">
-                        <input className="start-year" placeholder="YYYY" />
-                        <span>.</span>
-                        <input className="start-month" placeholder="MM" />
+                        <input
+                            type="month"
+                            className="start-date"
+                            name="date"
+                            onChange={handleDate}
+                        />
                     </div>
                 </div>
                 <div>
@@ -24,6 +52,8 @@ const AwardItem = ({ awardList, setAwardList, idx }) => {
                         <input
                             className="search-modal-btn"
                             placeholder="활동명"
+                            name="title"
+                            onChange={handleInput}
                         />
                     </div>
                     <div>
@@ -36,7 +66,9 @@ const AwardItem = ({ awardList, setAwardList, idx }) => {
                                 autoResizeTextarea(ref);
                             }}
                             className="detail"
+                            name="detail"
                             placeholder="세부사항"
+                            onChange={handleInput}
                         />
                     </div>
                 </div>
@@ -80,22 +112,10 @@ const ListItem = styled.li`
             flex: 3;
         }
         .period {
-            .start-year,
-            .end-year {
+            .start-date {
                 font-size: 14px;
                 font-weight: 500;
-                width: 36px;
-                border: none;
-                &:focus {
-                    outline: none;
-                }
-            }
-            .start-month,
-            .end-month {
-                font-size: 14px;
-                font-weight: 500;
-                width: 26px;
-                margin-left: 4px;
+                width: 100px;
                 border: none;
                 &:focus {
                     outline: none;
@@ -120,14 +140,16 @@ const ListItem = styled.li`
                 padding: 0;
                 border: none;
                 background: none;
-                width: fit-content;
-                cursor: pointer;
+                width: 100%;
                 color: #3b3d40;
                 white-space: nowrap;
                 font-size: 20px;
                 font-weight: 600;
                 margin-bottom: 3px;
                 word-wrap: break-word;
+                &:focus {
+                    outline: none;
+                }
             }
         }
         .position {
