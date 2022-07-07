@@ -8,6 +8,7 @@ import CareerItem from "../../components/CVCreate/CareerItem";
 import EducationItem from "../../components/CVCreate/EducationItem";
 import AwardItem from "../../components/CVCreate/AwardItem";
 import LanguageItem from "../../components/CVCreate/LanguageItem";
+import footImg from "../../assets/imgs/img-resume-footer.png";
 
 const recommendSkill = [
     "Python",
@@ -461,6 +462,23 @@ const CVCreate = () => {
                     </div>
                 </div>
             </div>
+            <FooterBar>
+                <div className="footer">
+                    <div>
+                        <div className="progress">
+                            <img src={footImg} alt="img" />
+                        </div>
+                        <div className="emoji">💪🏼</div>
+                        <div className="description">
+                            400자 이상 작성하시면 이력서를 완료할 수 있어요!
+                        </div>
+                    </div>
+                    <div className="btn-wrap">
+                        <Button>임시 저장</Button>
+                        <SubmitBtn>작성 완료</SubmitBtn>
+                    </div>
+                </div>
+            </FooterBar>
         </Wrap>
     );
 };
@@ -823,5 +841,73 @@ const SkillTag = styled(SkillChooseButton)`
         margin-top: 4px;
         cursor: pointer;
     }
+`;
+const FooterBar = styled.div`
+    position: fixed;
+    bottom: 0;
+    box-sizing: border-box;
+    background-color: #fff;
+    border-top: 1px solid #e0e0e0;
+    display: flex;
+    width: 100%;
+    padding: 0 50px;
+    align-items: center;
+    justify-content: space-between;
+
+    .footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+        padding: 15px 0;
+        margin: 0 auto;
+
+        & > div {
+            display: flex;
+            align-items: center;
+        }
+
+        .progress {
+            & > img {
+                margin-top: 5px;
+                height: 50px;
+            }
+        }
+        .emoji {
+            margin-top: 2px;
+            margin-left: 6px;
+            font-size: 16px;
+            width: 32px;
+        }
+        .description {
+            font-size: 13px;
+            margin-top: 3px;
+            color: #333;
+            font-weight: 600;
+        }
+
+        .btn-wrap {
+            display: flex;
+            justify-content: flex-end;
+        }
+    }
+`;
+const Button = styled.button`
+    background-color: #fff;
+    border: 1px solid #36f;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 173px;
+    height: 50px;
+    font-size: 16px;
+    color: #36f;
+    border-radius: 25px;
+    cursor: pointer;
+`;
+const SubmitBtn = styled(Button)`
+    margin-left: 9px;
+    color: #fff;
+    background-color: #36f;
 `;
 export default CVCreate;
