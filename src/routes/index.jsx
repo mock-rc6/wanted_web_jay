@@ -7,6 +7,7 @@ import NoMatch from "../pages/NoMatch";
 import CVCreate from "../pages/CV/CVCreate";
 import Company from "../pages/Company";
 import Main from "../pages";
+import MyWanted from "../pages/MyWanted";
 
 const RootRoute = () => {
     return (
@@ -19,6 +20,7 @@ const RootRoute = () => {
                 <Route path="/cv/list" element={<CVList />} />
                 <Route path="/cv/:id" element={<CVCreate />} />
                 <Route path="/company" element={<Company />} />
+                <Route path="/mywanted" element={<MyWanted />} />
                 <Route path="*" element={<NoMatch />} />
             </Routes>
         </BrowserRouter>

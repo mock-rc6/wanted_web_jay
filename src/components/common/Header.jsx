@@ -150,7 +150,10 @@ const Header = () => {
                                     {isProfileOpened && (
                                         <div className="profile-dropdown">
                                             <ul>
-                                                <li>
+                                                <li
+                                                    onClick={() => {
+                                                        navigate("/mywanted");
+                                                    }}>
                                                     <div>MY 원티드</div>
                                                 </li>
                                                 <li>
