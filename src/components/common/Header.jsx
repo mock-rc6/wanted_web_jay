@@ -12,6 +12,7 @@ import { logoutAction } from "../../store/actions/login";
 const Header = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
+    const profileImg = useSelector((state) => state.profileReducer.profileImg);
 
     const isLogined = useSelector((state) => state.loginReducer.isLogin);
 
@@ -144,7 +145,9 @@ const Header = () => {
                                     onClick={() => {
                                         setIsProfileOpened(!isProfileOpened);
                                     }}>
-                                    <Profile isClicked={isProfileOpened}>
+                                    <Profile
+                                        isClicked={isProfileOpened}
+                                        profileImg={profileImg}>
                                         <div></div>
                                     </Profile>
                                     {isProfileOpened && (
@@ -416,7 +419,7 @@ const Profile = styled.div`
         border-radius: 50%;
         background-size: cover;
         background-position: 50%;
-        background-image: url(https://s3.ap-northeast-2.amazonaws.com/wanted-public/profile_default.png);
+        background-image: url(${(props) => props.profileImg});
     }
 `;
 const Category = styled.li`

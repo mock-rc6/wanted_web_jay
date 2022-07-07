@@ -5,12 +5,18 @@ import styled from "styled-components";
 import Header from "../../components/common/Header";
 import { api } from "../../lib/api/api";
 import { getCookie } from "../../lib/cookies/cookie";
+import { useDispatch, useSelector } from "react-redux";
+import { profileImageAction } from "../../store/actions/profile";
 
 const MyWanted = () => {
     const accessToken = getCookie("accessToken");
+    const formData = new FormData();
     const navigate = useNavigate();
+    const dispatch = useDispatch();
+    const profileImg = useSelector((state) => state.profileReducer.profileImg);
 
     const [form, setForm] = useState({});
+    const [img, setImg] = useState("");
 
     useEffect(() => {
         axios
@@ -30,6 +36,48 @@ const MyWanted = () => {
             });
     }, []);
 
+    useEffect(() => {
+        if (img !== "") {
+            if (window.confirm("사진을 등록하시겠습니까?")) {
+                uploadImage();
+            }
+        }
+    }, [img]);
+
+    const handleImg = (e) => {
+        console.log("e.target.files[0] :>> ", e.target.files[0]);
+        const i = e.target.files[0];
+        let list = [];
+        list.push(i);
+        setImg(i);
+    };
+
+    const uploadImage = () => {
+        formData.append("images", img);
+        axios
+            .post(api + "users/resources/images", formData, {
+                headers: {
+                    "X-Access-Token": accessToken,
+                },
+                withCredentials: true,
+            })
+            .then((res) => {
+                console.log("res :>> ", res);
+                if (res.data.isSuccess) {
+                    dispatch(
+                        profileImageAction(
+                            "https://dev.odoong.shop/resources" +
+                                res.data.result.photo_url
+                        )
+                    );
+                    window.location.reload();
+                } else alert(res.data.message);
+            })
+            .catch((e) => {
+                console.log("e :>> ", e);
+            });
+    };
+
     return (
         <Wrap>
             <Header />
@@ -38,8 +86,8 @@ const MyWanted = () => {
                 <div className="mywanted-container">
                     <aside>
                         <div className="profile">
-                            <Avatar>
-                                <input type="file" />
+                            <Avatar profileImg={profileImg}>
+                                <input type="file" onChange={handleImg} />
                             </Avatar>
                             <dl
                                 onClick={() => {
@@ -406,7 +454,7 @@ const Wrap = styled.div`
     }
 `;
 const Avatar = styled.div`
-    background-image: url(https://s3.ap-northeast-2.amazonaws.com/wanted-public/profile_default.png);
+    background-image: url(${(props) => props.profileImg});
     width: 77px;
     height: 77px;
     border-radius: 50%;
