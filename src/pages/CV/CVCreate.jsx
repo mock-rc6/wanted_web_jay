@@ -98,6 +98,38 @@ const CVCreate = () => {
         language_certificates: [],
     };
 
+    useEffect(() => {
+        axios
+            .get(api + `resumes/${resumeId}`, {
+                headers: {
+                    "x-access-token": accessToken,
+                },
+                withCredentials: true,
+            })
+            .then((res) => {
+                console.log("res :>> ", res);
+                if (res.data.isSuccess) {
+                    setName(res.data.result.name);
+                    setEmail(res.data.result.email);
+                    setCareerList(res.data.result.careers);
+                    setAwardList(res.data.result.awards);
+                    setEducationList(res.data.result.educations);
+                    setLangList(res.data.result.language_skills);
+                    setSkillList(res.data.result.skills);
+                    if (res.data.result.skills.length !== 0)
+                        setOpenSkillTab(true);
+                    setLink(res.data.result.external_link);
+                    if (res.data.result.external_link.length !== 0)
+                        setOpenLink(true);
+                    setPhoneNumber(res.data.result.phone_number);
+                    setIntroduction(res.data.result.introduction);
+                } else alert(res.data.message);
+            })
+            .catch((e) => {
+                console.log("e :>> ", e);
+            });
+    }, []);
+
     const addCareer = () => {
         let list = [...careerList, career];
         setCareerList(list);
@@ -259,7 +291,7 @@ const CVCreate = () => {
                             type="text"
                             maxLength={100}
                             placeholder="이름(필수)"
-                            defaultValue={state.name}
+                            defaultValue={name}
                             onChange={handleName}
                         />
                         <input
@@ -267,7 +299,7 @@ const CVCreate = () => {
                             type="email"
                             maxLength={120}
                             placeholder="이메일(필수)"
-                            defaultValue={state.email}
+                            defaultValue={email}
                             onChange={handleEmail}
                         />
                         <input
@@ -276,6 +308,7 @@ const CVCreate = () => {
                             maxLength={200}
                             placeholder="연락처(필수) ex) 010-0000-0000"
                             onChange={handlePhoneNumber}
+                            defaultValue={phoneNumber}
                         />
                     </div>
                     <div className="body-about">
@@ -291,6 +324,7 @@ const CVCreate = () => {
                             maxLength={4000}
                             placeholder="간단한 자기소개를 통해 이력서를 돋보이게 만들어보세요. (3~5줄 권장)"
                             onChange={handleIntroduction}
+                            defaultValue={introduction}
                             onKeyDown={() => {
                                 autoResizeTextarea(ref);
                             }}
@@ -549,6 +583,7 @@ const CVCreate = () => {
                                         className="link-input"
                                         placeholder="http://"
                                         onChange={handleLink}
+                                        defaultValue={link}
                                     />
                                 )}
                             </div>

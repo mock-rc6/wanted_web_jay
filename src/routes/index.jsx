@@ -14,7 +14,7 @@ const RootRoute = () => {
                 <Route path="/recruit-detail/:id" element={<RecruitDetail />} />
                 <Route path="/cv/intro" element={<CVIntro />} />
                 <Route path="/cv/list" element={<CVList />} />
-                <Route path="/cv/create" element={<CVCreate />} />
+                <Route path="/cv/:id" element={<CVCreate />} />
                 <Route path="*" element={<NoMatch />} />
             </Routes>
         </BrowserRouter>

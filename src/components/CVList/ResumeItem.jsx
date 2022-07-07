@@ -1,22 +1,59 @@
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { HiDotsVertical } from "react-icons/hi";
 
-const ResumeItem = ({ title, isFinished, updatedAt, onClick }) => {
+const ResumeItem = ({
+    title,
+    isFinished,
+    updatedAt,
+    onClick,
+    deleteResume,
+}) => {
+    const allRef = useRef();
+    const ref = useRef();
+    const [openDropdown, setOpenDropdown] = useState(false);
+
+    useEffect(() => {
+        window.addEventListener("click", openMenu);
+
+        return () => {
+            window.removeEventListener("click", openMenu);
+        };
+    });
+
+    const openMenu = (e) => {
+        if (
+            allRef.current.contains(e.target) &&
+            !ref.current.contains(e.target)
+        )
+            onClick();
+    };
+
     return (
-        <Wrap onClick={onClick}>
+        <Wrap ref={allRef}>
             <Title>
                 <h3>{title}</h3>
                 <p>{updatedAt.substr(0, 10).replace(/-/gi, ".")}</p>
-                <p className="match">매치업 이력서</p>
             </Title>
             <Info>
                 <div className="lang">한</div>
                 <span>{isFinished ? "작성 완료" : "작성 중"}</span>
-                <div className="dropdown">
+                <div
+                    ref={ref}
+                    className="dropdown"
+                    onClick={() => {
+                        setOpenDropdown(!openDropdown);
+                    }}>
                     <button>
                         <HiDotsVertical style={{ width: 24, height: 24 }} />
                     </button>
+                    {openDropdown && (
+                        <div className="dropdown-menu">
+                            <button>이름 변경</button>
+                            <button>다운로드</button>
+                            <button onClick={deleteResume}>삭제</button>
+                        </div>
+                    )}
                 </div>
             </Info>
         </Wrap>
@@ -97,6 +134,8 @@ const Info = styled.div`
 
     .dropdown {
         margin-left: auto;
+        position: relative;
+
         & > button {
             display: flex;
             align-items: center;
@@ -107,6 +146,35 @@ const Info = styled.div`
             height: 100%;
             color: #76797e;
             cursor: pointer;
+        }
+
+        .dropdown-menu {
+            z-index: 1;
+            position: absolute;
+            top: 26px;
+            right: 12px;
+            min-width: 160px;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+            border: 1px solid #d2d2d2;
+            background-color: #fff;
+            padding: 5px 0;
+
+            & > button {
+                white-space: nowrap;
+                height: 26px;
+                border: none;
+                background: none;
+                color: #272b33;
+                text-align: left;
+                padding: 3px 20px;
+                font-size: 14px;
+                cursor: pointer;
+                &:hover {
+                    background-color: #efefef;
+                }
+            }
         }
     }
 `;

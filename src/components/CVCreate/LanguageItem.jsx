@@ -21,8 +21,12 @@ const langItem = [
 ];
 const levelItem = ["FLUENT", "BUSINESS", "DAILY"];
 const LanguageItem = ({ langList, setLangList, idx }) => {
-    const [lang, setLang] = useState("언어");
-    const [level, setLevel] = useState("수준");
+    const [lang, setLang] = useState(
+        langList[idx].title ? langList[idx].title : "언어"
+    );
+    const [level, setLevel] = useState(
+        langList[idx].level ? langList[idx].level : "수준"
+    );
     const [langDropdown, setLangDropdown] = useState(false);
     const [levelDropdown, setLevelDropdown] = useState(false);
 
@@ -156,6 +160,11 @@ const LanguageItem = ({ langList, setLangList, idx }) => {
                                             onChange={(e) => {
                                                 handleTestInput(e, i);
                                             }}
+                                            defaultValue={
+                                                langList[idx]
+                                                    .language_certificates[i]
+                                                    .title
+                                            }
                                         />
                                         <input
                                             className="exam-score"
@@ -164,6 +173,11 @@ const LanguageItem = ({ langList, setLangList, idx }) => {
                                             onChange={(e) => {
                                                 handleTestInput(e, i);
                                             }}
+                                            defaultValue={
+                                                langList[idx]
+                                                    .language_certificates[i]
+                                                    .score
+                                            }
                                         />
                                         <input
                                             className="exam-time"
@@ -172,6 +186,11 @@ const LanguageItem = ({ langList, setLangList, idx }) => {
                                             onChange={(e) => {
                                                 handleTestDate(e, i);
                                             }}
+                                            defaultValue={
+                                                langList[idx]
+                                                    .language_certificates[i]
+                                                    .date
+                                            }
                                         />
                                         <button
                                             className="exam-delete-btn"
@@ -311,6 +330,7 @@ const TestList = styled.li`
     }
 
     .exam-time {
+        width: 150px;
         border: none;
         margin-top: 5px;
         margin-bottom: 3px;

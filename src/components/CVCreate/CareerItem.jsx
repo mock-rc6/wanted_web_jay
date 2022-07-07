@@ -9,6 +9,7 @@ const CareerItem = ({ careerList, setCareerList, idx }) => {
     const [openModal, setOpenModal] = useState(false);
     const [companyName, setCompanyName] = useState("");
     const [tenure, setTenure] = useState("FULL_TIME");
+    const [isChecked, setIsChecked] = useState(careerList[idx].is_in_service);
 
     const deleteCareer = (id) => {
         let list = [...careerList];
@@ -87,6 +88,7 @@ const CareerItem = ({ careerList, setCareerList, idx }) => {
         let list = [...careerList];
         list[idx] = changed;
         setCareerList(list);
+        setIsChecked(e.target.checked);
     };
 
     const handleInput = (e) => {
@@ -107,23 +109,30 @@ const CareerItem = ({ careerList, setCareerList, idx }) => {
                     <div className="period">
                         <input
                             className="start-date"
-                            type="month"
+                            type="date"
                             name="start_date"
                             onChange={handleDate}
+                            defaultValue={careerList[idx].start_date}
                         />
-                        <span>&nbsp;-&nbsp;</span>
-                        <input
-                            className="end-date"
-                            type="month"
-                            name="end_date"
-                            onChange={handleDate}
-                        />
+                        {isChecked && (
+                            <>
+                                <span>&nbsp;-&nbsp;</span>
+                                <input
+                                    className="end-date"
+                                    type="date"
+                                    name="end_date"
+                                    onChange={handleDate}
+                                    defaultValue={careerList[idx].end_date}
+                                />
+                            </>
+                        )}
                     </div>
                     <div className="period-checkbox">
                         <input
                             type="checkbox"
                             name="is_in_service"
                             onChange={handleCheck}
+                            defaultChecked={careerList[idx].is_in_service}
                         />
                         <label>현재 재직중</label>
                     </div>
@@ -151,6 +160,7 @@ const CareerItem = ({ careerList, setCareerList, idx }) => {
                             placeholder="부서명/직책"
                             name="department_position"
                             onChange={handleInput}
+                            defaultValue={careerList[idx].department_position}
                         />
                     </div>
                     <div className="projects">
@@ -174,28 +184,42 @@ const CareerItem = ({ careerList, setCareerList, idx }) => {
                                         onChange={(e) => {
                                             handleResultInput(e, i);
                                         }}
+                                        defaultValue={
+                                            careerList[idx].results[i].title
+                                        }
                                     />
                                     <div className="period">
                                         <input
                                             className="start-date"
-                                            type="month"
+                                            type="date"
                                             name="start_date"
                                             onChange={(e) => {
                                                 handleResultDate(e, i);
                                             }}
+                                            defaultValue={
+                                                careerList[idx].results[i]
+                                                    .start_date
+                                            }
                                         />
                                         <span>&nbsp;-&nbsp;</span>
                                         <input
                                             className="end-date"
-                                            type="month"
+                                            type="date"
                                             name="end_date"
                                             onChange={(e) => {
                                                 handleResultDate(e, i);
                                             }}
+                                            defaultValue={
+                                                careerList[idx].results[i]
+                                                    .end_date
+                                            }
                                         />
                                     </div>
                                     <textarea
                                         ref={ref2}
+                                        defaultValue={
+                                            careerList[idx].results[i].detail
+                                        }
                                         onKeyDown={() => {
                                             autoResizeTextarea(ref2);
                                         }}
@@ -341,7 +365,6 @@ const ListItem = styled.li`
             .end-date {
                 font-size: 14px;
                 font-weight: 500;
-                width: 100px;
                 border: none;
                 &:focus {
                     outline: none;

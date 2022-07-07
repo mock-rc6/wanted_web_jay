@@ -10,7 +10,6 @@ import axios from "axios";
 import { api } from "../../lib/api/api";
 import { getCookie } from "../../lib/cookies/cookie";
 
-const mock = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 const CVList = () => {
     const navigate = useNavigate();
     const accessToken = getCookie("accessToken");
@@ -18,6 +17,10 @@ const CVList = () => {
     const [resumeList, setResumeList] = useState([]);
 
     useEffect(() => {
+        getResumes();
+    }, []);
+
+    const getResumes = () => {
         axios
             .get(api + "resumes", {
                 headers: { "x-access-token": accessToken },
@@ -29,7 +32,7 @@ const CVList = () => {
             .catch((e) => {
                 console.log("e :>> ", e);
             });
-    }, []);
+    };
 
     const addResume = () => {
         axios
@@ -51,12 +54,36 @@ const CVList = () => {
                         name,
                         email,
                     };
-                    navigate("/cv/create", { state: info });
+                    navigate(`/cv/${id}`, { state: info });
                 } else alert(res.data.message);
             })
             .catch((e) => {
                 console.log("e :>> ", e);
             });
+    };
+
+    const deleteResume = (id) => {
+        if (window.confirm("이력서를 삭제하시겠습니까?")) {
+            axios
+                .post(
+                    api + `resumes/${id}`,
+                    {},
+                    {
+                        headers: {
+                            "x-access-token": accessToken,
+                        },
+                        withCredentials: true,
+                    }
+                )
+                .then((res) => {
+                    console.log("res :>> ", res);
+                    if (!res.data.isSuccess) alert(res.data.message);
+                    else getResumes();
+                })
+                .catch((e) => {
+                    console.log("e :>> ", e);
+                });
+        }
     };
 
     return (
@@ -105,12 +132,20 @@ const CVList = () => {
                     {resumeList.map((data, idx) => (
                         <ResumeItem
                             onClick={() => {
-                                navigate(`/cv/${data.id}`);
+                                navigate(`/cv/${data.id}`, {
+                                    state: {
+                                        id: data.id,
+                                        title: data.title,
+                                    },
+                                });
                             }}
                             key={idx}
                             title={data.title}
                             isFinished={data.is_finished}
                             updatedAt={data.updated_at}
+                            deleteResume={() => {
+                                deleteResume(data.id);
+                            }}
                         />
                     ))}
                 </div>
@@ -121,7 +156,7 @@ const CVList = () => {
 
 const Wrap = styled.div`
     background-color: #f8f8fa;
-    height: 100vh;
+    height: 100%;
 
     .resume-list {
         width: 80%;

@@ -7,6 +7,9 @@ const EducationItem = ({ educationList, setEducationList, idx }) => {
     const ref = useRef();
     const [openModal, setOpenModal] = useState(false);
     const [schoolName, setSchoolName] = useState("");
+    const [isChecked, setIsChecked] = useState(
+        educationList[idx].is_in_service
+    );
 
     const deleteEducation = (idx) => {
         let list = [...educationList];
@@ -52,6 +55,7 @@ const EducationItem = ({ educationList, setEducationList, idx }) => {
         let list = [...educationList];
         list[idx] = changed;
         setEducationList(list);
+        setIsChecked(e.target.checked);
     };
 
     useEffect(() => {
@@ -65,23 +69,30 @@ const EducationItem = ({ educationList, setEducationList, idx }) => {
                     <div className="period">
                         <input
                             className="start-date"
-                            type="month"
+                            type="date"
                             name="start_date"
                             onChange={handleDate}
+                            defaultValue={educationList[idx].start_date}
                         />
-                        <span>&nbsp;-&nbsp;</span>
-                        <input
-                            className="end-date"
-                            type="month"
-                            name="end_date"
-                            onChange={handleDate}
-                        />
+                        {isChecked && (
+                            <>
+                                <span>&nbsp;-&nbsp;</span>
+                                <input
+                                    className="end-date"
+                                    type="date"
+                                    name="end_date"
+                                    onChange={handleDate}
+                                    defaultValue={educationList[idx].end_date}
+                                />
+                            </>
+                        )}
                     </div>
                     <div className="period-checkbox">
                         <input
                             type="checkbox"
                             name="is_in_service"
                             onChange={handleCheck}
+                            defaultChecked={educationList[idx].is_in_service}
                         />
                         <label>현재 재학중</label>
                     </div>
@@ -104,6 +115,7 @@ const EducationItem = ({ educationList, setEducationList, idx }) => {
                             placeholder="전공 및 학위 (ex: 경영학과 학사)"
                             name="major_degree"
                             onChange={handleInput}
+                            defaultValue={educationList[idx].major_degree}
                         />
                     </div>
                     <div>
@@ -119,6 +131,7 @@ const EducationItem = ({ educationList, setEducationList, idx }) => {
                             placeholder="이수과목 또는 연구내용"
                             name="detail"
                             onChange={handleInput}
+                            defaultValue={educationList[idx].detail}
                         />
                     </div>
                 </div>
@@ -224,7 +237,6 @@ const ListItem = styled.li`
             .end-date {
                 font-size: 14px;
                 font-weight: 500;
-                width: 100px;
                 border: none;
                 &:focus {
                     outline: none;

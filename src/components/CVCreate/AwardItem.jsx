@@ -40,10 +40,11 @@ const AwardItem = ({ awardList, setAwardList, idx }) => {
                 <div>
                     <div className="period">
                         <input
-                            type="month"
+                            type="date"
                             className="start-date"
                             name="date"
                             onChange={handleDate}
+                            defaultValue={awardList[idx].date}
                         />
                     </div>
                 </div>
@@ -54,6 +55,7 @@ const AwardItem = ({ awardList, setAwardList, idx }) => {
                             placeholder="활동명"
                             name="title"
                             onChange={handleInput}
+                            defaultValue={awardList[idx].title}
                         />
                     </div>
                     <div>
@@ -69,6 +71,7 @@ const AwardItem = ({ awardList, setAwardList, idx }) => {
                             name="detail"
                             placeholder="세부사항"
                             onChange={handleInput}
+                            defaultValue={awardList[idx].detail}
                         />
                     </div>
                 </div>
@@ -115,7 +118,6 @@ const ListItem = styled.li`
             .start-date {
                 font-size: 14px;
                 font-weight: 500;
-                width: 100px;
                 border: none;
                 &:focus {
                     outline: none;
