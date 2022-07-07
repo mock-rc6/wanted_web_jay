@@ -1,29 +1,29 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import Header from "../../components/common/Header";
-import tag01 from "../../assets/imgs/img-tag-01.png";
-import tag02 from "../../assets/imgs/img-tag-02.png";
-import tag03 from "../../assets/imgs/img-tag-03.png";
-import tag04 from "../../assets/imgs/img-tag-04.png";
-import tag05 from "../../assets/imgs/img-tag-05.png";
-import tag06 from "../../assets/imgs/img-tag-06.png";
-import tag07 from "../../assets/imgs/img-tag-07.png";
-import tag08 from "../../assets/imgs/img-tag-08.png";
-
 import Card from "../../components/common/Card";
 import axios from "axios";
 import { api } from "../../lib/api/api";
 import LocationModal from "../../components/Recruit/LocationModal";
+import { getCookie } from "../../lib/cookies/cookie";
+import { useNavigate } from "react-router-dom";
 
-const tags = [
-    { label: "연봉이 최고의 복지", src: tag01 },
-    { label: "재택근무", src: tag02 },
-    { label: "퇴사율 10% 이하", src: tag03 },
-    { label: "급성장 중", src: tag04 },
-    { label: "병역특례", src: tag05 },
-    { label: "50인 이하", src: tag06 },
-    { label: "50인 이상", src: tag07 },
-    { label: "업력 5년 이상", src: tag08 },
+const tagList = [
+    "재택근무",
+    "음료",
+    "간식",
+    "상위 10%",
+    "상위 5%",
+    "50명 이하",
+    "50명 이상",
+    "사내 식당",
+    "수평적 문화",
+    "병역 특례",
+    "연봉이 최고의 복지",
+    "유연 근무",
+    "자유로운 휴가",
+    "일한만큼 받는 보상",
+    "업력 5년 이상",
 ];
 
 const jobGroupList = [
@@ -36,6 +36,9 @@ const jobGroupList = [
 ];
 
 const RecruitmentPage = () => {
+    const accessToken = getCookie("accessToken");
+    const navigate = useNavigate();
+
     const [gridItems, setGridItems] = useState([]);
     const [careerFilterButton, setCareerFilterButton] = useState(false); //경력 버튼 open 여부
     const [techStackFilterButton, setTechStackFilterButton] = useState(false); //기술스택 버튼 open 여부
@@ -48,6 +51,9 @@ const RecruitmentPage = () => {
     const [jobCategory, setJobCategory] = useState([]); //선택된 포지션
     const [locations, setLocations] = useState(["한국.전국"]); //선택된 지역
     const [years, setYears] = useState([0, 100]); //선택된 경력
+    const [tags, setTags] = useState([]); //선택된 해시태그
+    const [sort, setSort] = useState("responseRate,desc"); //정렬
+    const [sortName, setSortName] = useState("응답률순");
 
     const [sliderLeftValue, setSliderLeftValue] = useState(0);
     const [sliderRightValue, setSliderRightValue] = useState(100);
@@ -83,7 +89,15 @@ const RecruitmentPage = () => {
                             : locations
                                   .map((data) => `locations=${data}&`)
                                   .join("")
-                    }${years.map((data) => `years=${data / 10}&`).join("")}`
+                    }${years
+                        .map((data) => `years=${data / 10}&`)
+                        .join("")}sort=${sort}`,
+                {
+                    headers: {
+                        "x-access-token": accessToken,
+                    },
+                    withCredentials: true,
+                }
             )
             .then((res) => {
                 console.log("res :>> ", res);
@@ -93,7 +107,7 @@ const RecruitmentPage = () => {
             .catch((e) => {
                 console.log("e :>> ", e);
             });
-    }, [jobGroup, jobCategory, locations, years]);
+    }, [jobGroup, jobCategory, locations, years, tags, sort]);
 
     useEffect(() => {
         setJobGroupButton(false);
@@ -103,6 +117,21 @@ const RecruitmentPage = () => {
         //선택하면 옆에 직군 선택 가능하게 변경
         setJobGroup(e.target.innerHTML);
         setJobCategory([jobCategoryList[0].category]);
+    };
+
+    const handleTags = (e) => {
+        //태그
+        let check = false;
+        let list = [...tags];
+        list.forEach((d, i) => {
+            if (d === e.target.id) {
+                check = true;
+                return;
+            }
+        });
+        if (check) list = list.filter((d) => d !== e.target.id);
+        else list.push(e.target.id);
+        setTags(list);
     };
 
     const setLeftValue = (e) => {
@@ -413,7 +442,7 @@ const RecruitmentPage = () => {
                                     onClick={() => {
                                         setSortButton(!sortButton);
                                     }}>
-                                    <span>응답률순</span>
+                                    <span>{sortName}</span>
                                     <SortArrow
                                         isClicked={sortButton}
                                         width="8"
@@ -427,21 +456,54 @@ const RecruitmentPage = () => {
                                             fill="#333333"></path>
                                     </SortArrow>
                                 </FilterButton>
+                                {sortButton && (
+                                    <ul className="sort-list">
+                                        <li
+                                            onClick={() => {
+                                                setSort("createdAt,desc");
+                                                setSortName("최신순");
+                                                setSortButton(false);
+                                            }}>
+                                            <button>최신순</button>
+                                        </li>
+                                        <li
+                                            onClick={() => {
+                                                setSort("views,desc");
+                                                setSortName("인기순");
+                                                setSortButton(false);
+                                            }}>
+                                            <button>인기순</button>
+                                        </li>
+                                        <li
+                                            onClick={() => {
+                                                setSort("responseRate,desc");
+                                                setSortName("응답률순");
+                                                setSortButton(false);
+                                            }}>
+                                            <button>응답률순</button>
+                                        </li>
+                                    </ul>
+                                )}
                             </div>
                         </div>
                         <hr className="hr-01" />
                         <section className="tag-list">
-                            {tags.map((data, idx) => (
-                                <button key={idx}>
-                                    {data.label}
-                                    <img src={data.src} alt="tag" />
+                            {tagList.map((data, idx) => (
+                                <button
+                                    key={idx}
+                                    id={idx + 1}
+                                    onClick={handleTags}>
+                                    {data}
                                 </button>
                             ))}
                         </section>
                     </div>
                     <hr className="hr-02" />
                     <div className="joblist-bookmark-section">
-                        <button>
+                        <button
+                            onClick={() => {
+                                navigate("/profile/bookmarks");
+                            }}>
                             <svg
                                 width="13"
                                 height="17"
@@ -480,7 +542,7 @@ const RecruitmentPage = () => {
                         {gridItems.map((data, idx) => (
                             <Card
                                 key={idx}
-                                id={idx + 1}
+                                id={data.id}
                                 position={data.title}
                                 companyName={data.company_name}
                                 responseRate={data.response_rate}
@@ -504,14 +566,14 @@ const RecruitmentPage = () => {
 const Wrap = styled.div`
     & .hr-01 {
         border: 0px;
-        border-top: 1px solid #cccccc;
+        border-top: 1px solid #e1e2e3;
         margin: 25px 0px;
     }
     & .hr-02 {
         margin-left: -12.5%;
         width: 100vw;
         border: 0px;
-        border-top: 1px solid #cccccc;
+        border-top: 1px solid #e1e2e3;
         margin-bottom: 38px;
     }
     & .category-navbar-container {
@@ -561,6 +623,30 @@ const Wrap = styled.div`
     }
 
     & .sort-wrap {
+        position: relative;
+        .sort-list {
+            width: 100%;
+            position: absolute;
+            top: 39px;
+            z-index: 2;
+            border: 1px solid #ececec;
+            border-radius: 0 0 4px 4px;
+            & li {
+                & button {
+                    background-color: #fff;
+                    font-size: 14px;
+                    line-height: 40px;
+                    color: #333;
+                    text-align: left;
+                    padding: 0 0 0 16px;
+                    border: none;
+                    width: 100%;
+                    border-bottom: 1px solid #ececec;
+                    font-weight: 400;
+                    cursor: pointer;
+                }
+            }
+        }
     }
 
     & .tag-list {
@@ -656,7 +742,7 @@ const FilterButton = styled.button`
     height: 40px;
     border: 1px solid #cccccc;
     border-radius: 5px;
-    font-weight: 600;
+    font-weight: 400;
     position: relative;
 
     .filtered-count {
