@@ -222,7 +222,7 @@ const RecruitDetail = () => {
             <div className="job-detail-content-wrap">
                 <div className="job-detail-content">
                     <div className="job-content">
-                        <Carousel images={[a, b, c]} />
+                        <Carousel images={recruitInfo.photos} />
                         <section className="job-header">
                             <h2>{recruitInfo.title}</h2>
                             <div>
@@ -234,12 +234,12 @@ const RecruitDetail = () => {
                                 </div>
                                 <span>|</span>
                                 <span className="job-header-location">
-                                    서울 · 한국
+                                    {recruitInfo.location}
                                 </span>
                             </div>
                             <div className="tags">
                                 <ul>
-                                    {tags.map((data, idx) => (
+                                    {recruitInfo.hashtags?.map((data, idx) => (
                                         <li key={idx}>
                                             <button className="tag-button">
                                                 #{data}
@@ -250,121 +250,15 @@ const RecruitDetail = () => {
                             </div>
                         </section>
                         <section className="job-content-description">
-                            <p>
-                                유와이즈원은 ECM(Enterprise Contents Management
-                                : 기업 콘텐츠 관리) 기반 통합업무 솔루션을
-                                개발하는 IT솔루션 전문기업입니다. 그룹웨어
-                                솔루션, 병원전용 커뮤니케이션 플랫폼등 IT변화에
-                                따른 최신 제품 라인업으로 고객에게 최고의
-                                솔루션과 서비스를 제공하여 고객의 가치창출은
-                                물론 고객과 함께 성장해 나가고 있습니다.
-                            </p>
-                            <h6>주요업무</h6>
-                            <p>
-                                1) 그룹웨어 기술지원팀 업무 수행
-                                <br />
-                                2) 대외 그룹웨어 유지보수 및 개선 담당
-                                <br />
-                                3) 내부 포탈(그룹웨어) 시스템을 운영 및 개선
-                                <br />
-                                4) 제품 개발
-                            </p>
-                            <h6>자격요건</h6>
-                            <p>
-                                1) 관련 업무 경력이 4년 이상이신 분<br />
-                                2) Java, JSP, Javascript를 능숙하게 다루시는 분
-                                <br />
-                                3) Maven, Eclipse 개발도구 경험이 풍부하신 분
-                                <br />
-                                4) SCM(Git 혹은 SVN)을 이용한 소스관리 경험
-                                보유자
-                                <br />
-                                5) Spring framework 기반 jQuery 활용 가능자
-                                <br />
-                                6) DBMS(Oracle 등) SQL 가능자
-                                <br />
-                                7) linux 사용 가능자
-                            </p>
-                            <h6>우대사항</h6>
-                            <p>
-                                1) 개발 분석/설계가 능숙하신 분<br />
-                                2) Java Open Source 라이브러리 사용이 능숙하신
-                                분
-                                <br />
-                                3) Apache Tomcat 연동 및 운영관련 경험이 있으신
-                                분
-                            </p>
-                            <h6>혜택 및 복지</h6>
-                            <p>
-                                ● 조직문화
-                                <br />
-                                • 수평적 조직문화 : 직급이 아닌 상호 간 '님'으로
-                                호칭합니다.
-                                <br />
-                                • 자유로운 연차사용 : 연차 사용 시 사유불문!
-                                자유로운 연차 사용이 가능합니다.
-                                <br />
-                                • 사내 식당에서 맛있는 중식/석식 제공해드립니다.
-                                <br />
-                                • 식사 대신 간편식을 즐길 수 있습니다.
-                                <br />
-                                <br />
-                                ● 근무환경
-                                <br />
-                                • 스마트 오피스 : 자율 좌석을 통해 스마트한
-                                근무환경 제공합니다.
-                                <br />
-                                • 사내 어린이집 : 육아 걱정없는 업무 몰입을 위해
-                                사내 어린이집을 운영합니다.
-                                <br />
-                                • 까페테리아 : 임직원 가격으로 할인된 가격에
-                                음료를 제공해드립니다.
-                                <br />
-                                • 안마 의자 및 캡슐룸 : 근무 중 피로 회복/휴식을
-                                위한 시설을 제공해드립니다.
-                                <br />
-                                <br />
-                                ● 교육/생활
-                                <br />
-                                • 신입사원교육(OJT)운영을 통해 원활한 적응을
-                                도와드립니다.
-                                <br />
-                                • 사내/외 교육, 사이버 연수원 등 교육비 지원 등
-                                다방면으로 성장을 지원합니다.
-                                <br />
-                                • 사내 동호회를 통해 친목을 도모합니다. <br />
-                                <br />
-                                ● 지원금/보험
-                                <br />
-                                • 종합건강검진
-                                <br />
-                                • 경조금 지원 : 좋은 날엔 축하금을, 슬픈 날엔
-                                위로금 지원합니다.
-                                <br />
-                                • 임직원몰 : 사내 임직원몰 내 다양한 상품을
-                                직원가에 구입이 가능합니다.
-                                <br />
-                                • 자녀의 학자금을 지원해드립니다.
-                                <br />
-                                <br />
-                                ● 선물
-                                <br />
-                                • 명절선물 : 다양한 품목 중 선택하여 상품을
-                                지급해드립니다.
-                                <br />
-                                • 생일자 조기퇴근제 : 생일 당사자 조기 퇴근이
-                                가능합니다.
-                                <br />• 장기근속제도 : 5/10/20년 장기 근무 시
-                                포상금을 지급해드립니다.
-                            </p>
+                            {recruitInfo.detail}
                             <h6>기술스택 · 툴</h6>
                             <div>
                                 <div className="job-description-skill">
-                                    <div>Git</div>
-                                    <div>Java</div>
-                                    <div>jQuery</div>
-                                    <div>Maven</div>
-                                    <div>JSP</div>
+                                    {recruitInfo.techstacks?.map(
+                                        (data, idx) => (
+                                            <div key={idx}>{data}</div>
+                                        )
+                                    )}
                                 </div>
                             </div>
                         </section>
@@ -379,7 +273,7 @@ const RecruitDetail = () => {
                             <div>
                                 <span className="header">근무지역</span>
                                 <span className="body">
-                                    서울특별시 강남구 봉은사로 644 대웅신관 3층
+                                    {recruitInfo.address}
                                 </span>
                             </div>
                             <div id="map" className="map"></div>
