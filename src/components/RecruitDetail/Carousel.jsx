@@ -30,7 +30,9 @@ const Carousel = (props) => {
             <Container ref={carouselRef}>
                 {images?.map((data, idx) => (
                     <ImageContainer key={idx}>
-                        <Image src={data} />
+                        <Image
+                            src={"https://dev.odoong.shop/resources" + data}
+                        />
                     </ImageContainer>
                 ))}
             </Container>
