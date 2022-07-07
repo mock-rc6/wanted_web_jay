@@ -1,5 +1,6 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import Header from "../../components/common/Header";
 import { api } from "../../lib/api/api";
@@ -7,6 +8,7 @@ import { getCookie } from "../../lib/cookies/cookie";
 
 const MyWanted = () => {
     const accessToken = getCookie("accessToken");
+    const navigate = useNavigate();
 
     const [form, setForm] = useState({});
 
@@ -39,7 +41,10 @@ const MyWanted = () => {
                             <Avatar>
                                 <input type="file" />
                             </Avatar>
-                            <dl>
+                            <dl
+                                onClick={() => {
+                                    navigate("/profile/edit");
+                                }}>
                                 <dt>{form.name}</dt>
                                 <dd style={{ paddingTop: 20 }}>{form.email}</dd>
                                 <dd style={{ paddingTop: 8 }}>
@@ -206,6 +211,11 @@ const Wrap = styled.div`
                     text-align: center;
 
                     & > dl {
+                        &:hover {
+                            text-decoration: underline;
+                            cursor: pointer;
+                        }
+
                         width: 100%;
                         padding: 0;
                         padding-top: 30px;
