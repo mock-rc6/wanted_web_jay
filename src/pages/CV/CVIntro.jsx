@@ -1,9 +1,44 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import Footer from "../../components/common/Footer";
 import Header from "../../components/common/Header";
+import axios from "axios";
+import { api } from "../../lib/api/api";
+import { getCookie } from "../../lib/cookies/cookie";
 
 const CVIntro = () => {
+    const navigate = useNavigate();
+    const accessToken = getCookie("accessToken");
+
+    const addResume = () => {
+        axios
+            .post(
+                api + "resumes",
+                {},
+                {
+                    headers: { "x-access-token": accessToken },
+                    withCredentials: true,
+                }
+            )
+            .then((res) => {
+                if (res.data.isSuccess) {
+                    console.log("res :>> ", res);
+                    const { id, title, name, email } = res.data.result;
+                    const info = {
+                        id,
+                        title,
+                        name,
+                        email,
+                    };
+                    navigate(`/cv/${id}`, { state: info });
+                } else alert(res.data.message);
+            })
+            .catch((e) => {
+                console.log("e :>> ", e);
+            });
+    };
+
     return (
         <Wrap>
             <Header />
@@ -19,10 +54,14 @@ const CVIntro = () => {
                             작성해 보세요.
                         </h2>
                         <div className="resume-intro-content-button-wrap">
-                            <button className="go-to-resume">
+                            <button
+                                className="go-to-resume"
+                                onClick={() => {
+                                    navigate("/cv/list");
+                                }}>
                                 이력서 관리
                             </button>
-                            <button className="create-new">
+                            <button className="create-new" onClick={addResume}>
                                 새 이력서 작성
                             </button>
                         </div>
