@@ -114,7 +114,7 @@ const CareerItem = ({ careerList, setCareerList, idx }) => {
                             onChange={handleDate}
                             defaultValue={careerList[idx].start_date}
                         />
-                        {isChecked && (
+                        {!isChecked && (
                             <>
                                 <span>&nbsp;-&nbsp;</span>
                                 <input

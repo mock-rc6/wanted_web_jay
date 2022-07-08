@@ -74,7 +74,7 @@ const EducationItem = ({ educationList, setEducationList, idx }) => {
                             onChange={handleDate}
                             defaultValue={educationList[idx].start_date}
                         />
-                        {isChecked && (
+                        {!isChecked && (
                             <>
                                 <span>&nbsp;-&nbsp;</span>
                                 <input
