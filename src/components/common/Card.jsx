@@ -5,7 +5,14 @@ import styled from "styled-components";
 import { api } from "../../lib/api/api";
 import { getCookie } from "../../lib/cookies/cookie";
 
-const Card = ({ id, position, companyName, responseRate, location }) => {
+const Card = ({
+    id,
+    position,
+    companyName,
+    responseRate,
+    location,
+    thumbnail,
+}) => {
     const bookmarkRef = useRef();
     const ref = useRef();
     const navigate = useNavigate();
@@ -55,7 +62,7 @@ const Card = ({ id, position, companyName, responseRate, location }) => {
 
     return (
         <Wrap ref={ref}>
-            <Header>
+            <Header thumbnail={"https://dev.odoong.shop/resources" + thumbnail}>
                 <button ref={bookmarkRef} onClick={doBookmark}>
                     <svg
                         width="22"
@@ -132,7 +139,7 @@ const Wrap = styled.div`
     }
 `;
 const Header = styled.header`
-    background-image: url("https://image.wanted.co.kr/optimize?src=https://static.wanted.co.kr/images/company/26984/dlkkkoapibieowe6__400_400.jpg&w=400&q=undefined");
+    background-image: url(${(props) => props.thumbnail});
     padding-bottom: 75%;
     position: relative;
     background-size: cover;

@@ -543,6 +543,7 @@ const RecruitmentPage = () => {
                             <Card
                                 key={idx}
                                 id={data.id}
+                                thumbnail={data.photos[0]}
                                 position={data.title}
                                 companyName={data.company_name}
                                 responseRate={data.response_rate}

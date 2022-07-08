@@ -43,6 +43,7 @@ const Likes = () => {
                                 key={idx}
                                 id={data.id}
                                 position={data.title}
+                                thumbnail={data.photos[0]}
                                 companyName={data.company_name}
                                 responseRate={data.response_rate}
                                 location={data.location}

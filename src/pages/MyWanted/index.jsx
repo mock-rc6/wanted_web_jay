@@ -183,7 +183,11 @@ const MyWanted = () => {
                                 <ul>
                                     {form.bookmarks?.map((data, idx) => (
                                         <Item key={idx}>
-                                            <div className="item-logo"></div>
+                                            <ItemLogo
+                                                img={
+                                                    "https://dev.odoong.shop/resources" +
+                                                    data.photos[0]
+                                                }></ItemLogo>
                                             <div className="item-content">
                                                 <h3>{data.title}</h3>
                                                 <div>
@@ -213,7 +217,11 @@ const MyWanted = () => {
                                 <ul>
                                     {form.likemarks?.map((data, idx) => (
                                         <Item key={idx}>
-                                            <div className="item-logo"></div>
+                                            <ItemLogo
+                                                img={
+                                                    "https://dev.odoong.shop/resources" +
+                                                    data.photos[0]
+                                                }></ItemLogo>
                                             <div className="item-content">
                                                 <h3>{data.title}</h3>
                                                 <div>
@@ -472,14 +480,6 @@ const Avatar = styled.div`
 const Item = styled.li`
     display: flex;
     align-items: center;
-    .item-logo {
-        background-image: url(https://s3.ap-northeast-2.amazonaws.com/wanted-public/profile_default.png);
-        width: 100px;
-        height: 100px;
-        border: 1px solid #e1e2e3;
-        border-radius: 3px;
-        background-size: cover;
-    }
     .item-content {
         padding-left: 20px;
         min-height: 100px;
@@ -501,5 +501,13 @@ const Item = styled.li`
             color: #999;
         }
     }
+`;
+const ItemLogo = styled.div`
+    background-image: url(${(props) => props.img});
+    width: 100px;
+    height: 100px;
+    border: 1px solid #e1e2e3;
+    border-radius: 3px;
+    background-size: cover;
 `;
 export default MyWanted;
