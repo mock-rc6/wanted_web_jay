@@ -43,6 +43,7 @@ const RecruitDetail = () => {
     });
     const [isBookmarked, setIsBookmarked] = useState();
     const [isLiked, setIsLiked] = useState();
+    const [isFollowed, setIsFollowed] = useState();
     const [warningOpen, setWarningOpen] = useState(false);
     const [position, setPosition] = useState({
         lat: 0,
@@ -148,6 +149,28 @@ const RecruitDetail = () => {
                 if (res.data.isSuccess) {
                     setIsLiked(!res.data.result.status); //0이면 라이크, 1이면 취소
                 } else alert(res.data.message);
+            })
+            .catch((e) => {
+                console.log("e :>> ", e);
+            });
+    };
+
+    const doFollow = () => {
+        axios
+            .post(
+                api + `companies/${recruitInfo.company_id}/follows`,
+                {},
+                {
+                    headers: {
+                        "x-access-token": accessToken,
+                    },
+                    withCredentials: true,
+                }
+            )
+            .then((res) => {
+                console.log("res :>> ", res);
+                if (res.data.isSuccess) setIsFollowed(!res.data.result.status);
+                else alert(res.data.message);
             })
             .catch((e) => {
                 console.log("e :>> ", e);
@@ -286,9 +309,11 @@ const RecruitDetail = () => {
                                     <h6>IT, 컨텐츠</h6>
                                 </div>
                             </button>
-                            <button className="follow-button">
-                                <span>팔로우</span>
-                            </button>
+                            <FollowBtn
+                                onClick={doFollow}
+                                isFollowed={isFollowed}>
+                                <span>{isFollowed ? "팔로잉" : "팔로우"}</span>
+                            </FollowBtn>
                         </section>
                         <section className="warning">
                             <div className="warning-header">
@@ -801,24 +826,6 @@ const Wrap = styled.div`
                 cursor: pointer;
             }
         }
-
-        & .follow-button {
-            all: unset;
-            padding: 0px 27px;
-            height: 40px;
-            border: 1px solid rgb(225, 226, 227);
-            border-radius: 25px;
-            color: rgb(51, 102, 255);
-
-            & > span {
-                font-weight: 700;
-            }
-
-            &:hover {
-                cursor: pointer;
-                color: rgb(15, 63, 208);
-            }
-        }
     }
 
     .warning {
@@ -1209,5 +1216,23 @@ const DisabledBtn = styled(ApplyBtn)`
     color: #ccc;
     background-color: #f2f4f7;
     cursor: default;
+`;
+const FollowBtn = styled.button`
+    all: unset;
+    padding: 0px 27px;
+    height: 40px;
+    border: 1px solid rgb(225, 226, 227);
+    border-radius: 25px;
+    background-color: ${(props) => (props.isFollowed ? "#f2f4f7" : "white")};
+    color: ${(props) => (props.isFollowed ? "#ccc" : "rgb(51, 102, 255)")};
+
+    & > span {
+        font-weight: 700;
+    }
+
+    &:hover {
+        cursor: pointer;
+        color: ${(props) => (props.isFollowed ? "#ccc" : "rgb(15, 63, 208)")};
+    }
 `;
 export default RecruitDetail;
