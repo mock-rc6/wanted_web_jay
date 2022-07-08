@@ -33,6 +33,10 @@ const SignupDetail = ({ width, modalStatus, closeModal, status }) => {
 
     const { name, phoneNum, password, passwordCheck } = form;
 
+    const [allCheck, setAllCheck] = useState(false);
+    const [essentialCheck, setEssentialCheck] = useState(false);
+    const [selectionCheck, setSelectionCheck] = useState(false);
+
     const [phoneNumIsValid, setPhoneNumIsValid] = useState(false);
     const [codeSuccess, setCodeSuccess] = useState(false);
     const [code, setCode] = useState("");
@@ -62,6 +66,21 @@ const SignupDetail = ({ width, modalStatus, closeModal, status }) => {
             else setIsPasswordSame(false);
         }
     }, [passwordCheck]);
+
+    useEffect(() => {
+        if (allCheck) {
+            setEssentialCheck(true);
+            setSelectionCheck(true);
+        } else {
+            setEssentialCheck(false);
+            setSelectionCheck(false);
+        }
+    }, [allCheck]);
+
+    useEffect(() => {
+        if (!essentialCheck || !selectionCheck) setAllCheck(false);
+        else if (essentialCheck && selectionCheck) setAllCheck(true);
+    }, [essentialCheck, selectionCheck]);
 
     const close = () => {
         if (status === "signup") {
@@ -185,46 +204,35 @@ const SignupDetail = ({ width, modalStatus, closeModal, status }) => {
     };
 
     const submit = () => {
-        if (
-            name !== "" &&
-            isPasswordSame &&
-            passwordRight &&
-            phoneNum !== "" &&
-            codeIsValid === 1
-        ) {
-            console.log("token :>> ", token);
-            axios
-                .post(
-                    api + "users",
-                    {
-                        user_name: name,
-                        email,
-                        password: password,
-                        phone_number: phoneNum,
+        axios
+            .post(
+                api + "users",
+                {
+                    user_name: name,
+                    email,
+                    password: password,
+                    phone_number: phoneNum,
+                },
+                {
+                    headers: {
+                        "X-Access-Token": token,
+                        "content-type": "application/json",
                     },
-                    {
-                        headers: {
-                            "X-Access-Token": token,
-                            "content-type": "application/json",
-                        },
-                        withCredentials: true,
-                    }
-                )
-                .then((res) => {
-                    console.log("res :>> ", res);
-                    if (res.data.isSuccess) {
-                        alert("회원가입이 완료되었습니다.");
-                        closeModal();
-                    } else {
-                        alert(res.data.message);
-                    }
-                })
-                .catch((e) => {
-                    console.log("e :>> ", e);
-                });
-        } else {
-            alert("입력되지 않은 정보가 있습니다.");
-        }
+                    withCredentials: true,
+                }
+            )
+            .then((res) => {
+                console.log("res :>> ", res);
+                if (res.data.isSuccess) {
+                    alert("회원가입이 완료되었습니다.");
+                    closeModal();
+                } else {
+                    alert(res.data.message);
+                }
+            })
+            .catch((e) => {
+                console.log("e :>> ", e);
+            });
     };
 
     const login = () => {
@@ -432,18 +440,36 @@ const SignupDetail = ({ width, modalStatus, closeModal, status }) => {
                             </div>
                             <div className="agree-wrap">
                                 <div className="check-all check">
-                                    <input type="checkbox" />
+                                    <input
+                                        type="checkbox"
+                                        checked={allCheck}
+                                        onChange={(e) => {
+                                            setAllCheck(e.target.checked);
+                                        }}
+                                    />
                                     전체 동의
                                 </div>
                                 <div className="check">
-                                    <input type="checkbox" />
+                                    <input
+                                        type="checkbox"
+                                        checked={essentialCheck}
+                                        onChange={(e) => {
+                                            setEssentialCheck(e.target.checked);
+                                        }}
+                                    />
                                     개인정보 수집 및 이용 동의 (필수)
                                     <span>자세히</span>
                                 </div>
                                 <div
                                     className="check"
                                     style={{ marginTop: 15 }}>
-                                    <input type="checkbox" />
+                                    <input
+                                        type="checkbox"
+                                        checked={selectionCheck}
+                                        onChange={(e) => {
+                                            setSelectionCheck(e.target.checked);
+                                        }}
+                                    />
                                     이벤트 소식 등 알림 정보 받기
                                     <span>자세히</span>
                                 </div>
@@ -451,12 +477,23 @@ const SignupDetail = ({ width, modalStatus, closeModal, status }) => {
                         </form>
                         <SubmitButtonWrap>
                             <div>
-                                <SubmitButton
-                                    type="submit"
-                                    onClick={submit}
-                                    ref={buttonRef}>
-                                    회원가입하기
-                                </SubmitButton>
+                                {name !== "" &&
+                                isPasswordSame &&
+                                passwordRight &&
+                                phoneNum !== "" &&
+                                codeIsValid === 1 &&
+                                essentialCheck ? (
+                                    <SubmitButton
+                                        type="submit"
+                                        onClick={submit}
+                                        ref={buttonRef}>
+                                        회원가입하기
+                                    </SubmitButton>
+                                ) : (
+                                    <DisabledButton>
+                                        회원가입하기
+                                    </DisabledButton>
+                                )}
                             </div>
                         </SubmitButtonWrap>
                     </div>
@@ -719,6 +756,11 @@ const SubmitButton = styled.button`
         background-color: #f2f4f7;
         cursor: not-allowed;
     }
+`;
+const DisabledButton = styled(SubmitButton)`
+    color: #cacaca;
+    cursor: not-allowed;
+    background-color: #f2f4f7;
 `;
 const InputCodeButton = styled.button`
     position: absolute;
