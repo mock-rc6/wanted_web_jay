@@ -74,3 +74,13 @@
   * height를 100%, auto로도 해봤지만 여전히 똑같았다.
   * textarea의 onKeyUp, onKeyDown에 autoResizeTextarea라는 함수를 실행했다.
   * autoResizeTextarea 함수 내에서는 useRef 훅으로 ref.current.scrollHeight를 사용하여 textarea의 높이를 조절했다.
+---
+## 2022-07-07 진행상황
+- 이력서 UI 완성 및 CRUD 구현
+- 회사 등록 페이지 UI 및 등록 기능 구현
+- 메인 페이지 UI 구현
+- 채용 공고에서 지원하기 기능 구현
+- My원티드 페이지 UI 및 회원 정보 불러오기, 정보 수정(프로필 사진, 이름, 이메일, 번호) 기능 구현
+- 북마크, 좋아요 기능 구현 및 모아보기 구현
+- 회사 팔로우 기능 구현
+- 채용 공고 정렬 기능 구현
