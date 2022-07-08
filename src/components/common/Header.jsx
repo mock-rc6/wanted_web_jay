@@ -37,6 +37,7 @@ const Header = () => {
     const [cookies, setCookie, removeCookie] = useCookies(["accessToken"]);
 
     const logout = () => {
+        navigate("/");
         removeCookie("accessToken");
         window.location.reload();
         dispatch(logoutAction());
