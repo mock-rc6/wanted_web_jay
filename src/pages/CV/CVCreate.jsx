@@ -118,6 +118,12 @@ const CVCreate = () => {
                     setSkillList(res.data.result.skills);
                     if (res.data.result.skills.length !== 0)
                         setOpenSkillTab(true);
+                    if (
+                        res.data.result.skills.length === 1 &&
+                        res.data.result.skills[0] === ""
+                    )
+                        setOpenSkillTab(false);
+
                     setLink(res.data.result.external_link);
                     if (res.data.result.external_link.length !== 0)
                         setOpenLink(true);
