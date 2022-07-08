@@ -63,3 +63,14 @@
 - 프로필 dropdown css 오류 수정
 - 채용 공고 조회 필터 변경에 따른 버그 수정
 - 이력서 작성 페이지 UI, 경력 추가 부분 구현
+* 2차 피드백 내용
+  * 구현한 기능을 모두 보여줄 수 있도록 영상에 담는 게 중요 ex) 로그인 여부에 따른 이력서 페이지 랜더링 차이
+  * 좀 더 디테일하게 UI 구현 필요
+---
+## 2022-07-06 진행상황
+- 이력서 작성 페이지 기초 UI 완성
+* 개발 도중 발생한 이슈
+  * textarea에서 height가 가변적이지 않고, 지정한 height에서 스크롤로만 조절이 되었다.
+  * height를 100%, auto로도 해봤지만 여전히 똑같았다.
+  * textarea의 onKeyUp, onKeyDown에 autoResizeTextarea라는 함수를 실행했다.
+  * autoResizeTextarea 함수 내에서는 useRef 훅으로 ref.current.scrollHeight를 사용하여 textarea의 높이를 조절했다.
